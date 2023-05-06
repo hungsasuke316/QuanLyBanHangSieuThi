@@ -1,8 +1,11 @@
 package com.example.quanlysieuthi.data.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Date;
 
 @Entity

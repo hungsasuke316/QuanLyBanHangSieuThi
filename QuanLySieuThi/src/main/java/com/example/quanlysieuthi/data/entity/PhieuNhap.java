@@ -1,6 +1,9 @@
 package com.example.quanlysieuthi.data.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.*;
 
 import java.util.Date;
