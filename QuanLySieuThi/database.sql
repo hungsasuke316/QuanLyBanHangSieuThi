@@ -1,7 +1,7 @@
 go
 use QuanLyBanHangSieuThi
 
-create table NhanVien(
+create table nhan_vien(
 	ma varchar(20),
 	ten varchar(255),
 	cccd int,
@@ -11,7 +11,7 @@ create table NhanVien(
 
 )
 
-create table KhachHang(
+create table khach_hang(
 	ma varchar(20),
 	ten varchar(255),
 	cccd int,
@@ -20,7 +20,7 @@ create table KhachHang(
 
 )
 
-create table SanPham(
+create table san_pham(
 	ma varchar(20),
 	ten varchar(255),
 	don_vi_tinh varchar(20),
@@ -30,13 +30,13 @@ create table SanPham(
 
 )
 
-create table NhaCungCap(
+create table nha_cung_cap(
 	ma varchar(20),
 	ten varchar(255),
 	primary key(ma)
 )
 
-create table HoaDon(
+create table hoa_don(
 	ma varchar(20),
 	ngay_lap_hoa_don date,
 	so_luong int,
@@ -51,7 +51,7 @@ create table HoaDon(
 )
 
 
-create table PhieuNhap(
+create table phieu_nhap(
 	ma varchar(20),
 	ngay_lap_phieu_nhap date,
 	so_luong int,
