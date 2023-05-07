@@ -45,9 +45,9 @@ create table hoa_don(
 	ma_san_pham varchar(20),
 	ma_khach_hang varchar(20)
 	primary key(ma),
-	foreign key (ma_nhan_vien) references NhanVien(ma),
-	foreign key (ma_khach_hang) references KhachHang(ma),
-	foreign key (ma_san_pham) references SanPham(ma)
+	foreign key (ma_nhan_vien) references nhan_vien(ma),
+	foreign key (ma_khach_hang) references khach_hang(ma),
+	foreign key (ma_san_pham) references san_pham(ma)
 )
 
 
@@ -60,7 +60,7 @@ create table phieu_nhap(
 	ma_san_pham varchar(20),
 	ma_nha_cung_cap varchar(20),
 	primary key(ma),
-	foreign key (ma_nhan_vien) references NhanVien(ma),
-	foreign key (ma_san_pham) references SanPham(ma),
-	foreign key (ma_nha_cung_cap) references NhaCungCap(ma)
+	foreign key (ma_nhan_vien) references nhan_vien(ma),
+	foreign key (ma_san_pham) references san_pham(ma),
+	foreign key (ma_nha_cung_cap) references nha_cung_cap(ma)
 )
