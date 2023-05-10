@@ -1,9 +1,7 @@
 package com.example.quanlysieuthi.data.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
 import lombok.*;
 
 import java.util.Date;
@@ -14,7 +12,6 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
-
 public class PhieuNhap {
     @Id
     private String ma;
