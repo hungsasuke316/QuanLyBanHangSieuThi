@@ -1,7 +1,11 @@
 package com.example.quanlysieuthi.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import lombok.*;
 
 import java.util.Set;

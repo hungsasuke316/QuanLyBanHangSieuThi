@@ -1,6 +1,7 @@
 package com.example.quanlysieuthi.data.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 import lombok.*;
 
 import java.util.Date;
@@ -11,7 +12,6 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
-
 public class PhieuNhap {
     @Id
     private String ma;
