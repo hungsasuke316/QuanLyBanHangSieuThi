@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>San Pham</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+
+    <h2>Save SanPham</h2>
+    <div th:if="${message}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+
+    <form action="#" th:action="@{/sanpham}" th:object="${sanPham}"
+          method="POST">
+        <input type="text" th:field="*{ma}" name="ma"
+               placeholder="Mã Sản Phẩm" class="form-control mb-4 col-4"/>
+
+        <input type="text" th:field="*{ten}" name="ten"
+               placeholder="Tên Sản Phẩm" class="form-control mb-4 col-4"/>
+
+        <input type="text" th:field="*{donViTinh}" name="donviTinh"
+               placeholder="Đơn Vị Tính" class="form-control mb-4 col-4"/>
+
+        <input type="number" th:field="*{donGia}" name="donGia"
+               placeholder="Đơn Giá" class="form-control mb-4 col-4"/>
+
+        <input type="number" th:field="*{soLuongTon}" name="soLuongTon"
+               placeholder="Số lượng tồn" class="form-control mb-4 col-4"/>
+
+        <button type="submit" class="btn btn-info col-2"> Save </button>
+    </form>
+
+    <hr>
+
+    <a class="btn btn-outline-primary" th:href = "@{/sanpham}"> Back to List</a>
+</div>
+</body>
+</html>
