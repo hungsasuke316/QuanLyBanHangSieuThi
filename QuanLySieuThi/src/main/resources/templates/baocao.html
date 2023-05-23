@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Doanh Thu</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div><h1>Báo Cáo Doanh Thua</h1></div>
+    <div th:if="${message}" class="alert alert-success text-center">
+        [[${message}]]
+    </div>
+    <form action="#" th:action="@{/baocao}" method="post">
+        <label for="year">Năm:</label>
+        <input type="number" id="year" name="year" required>
+        <label for="month">Tháng:</label>
+        <input type="number" id="month" name="month" required>
+        <button class="btn btn-primary" type="submit">Xem báo cáo</button>
+    </form>
+
+    <div th:if="${report != null}">
+        <h2>Báo cáo cho tháng/năm: <span th:text="${month} + '/' + ${year}"></span></h2>
+        <p>Tổng tiền hóa đơn: <span th:text="${report.tongTienHoaDon}"></span></p>
+        <p>Tổng tiền phiếu nhập: <span th:text="${report.tongTienPhieuNhap}"></span></p>
+        <p>Doanh Thu: <span th:text="${report.tongTienHoaDon - report.tongTienPhieuNhap}"></span></p>
+    </div>
+</div>
+</body>
+</html>
