@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>San Pham</title>
@@ -15,7 +15,7 @@
         [[${message}]]
     </div>
     <div>
-        <a class="btn btn-primary" th:href="@{/sanpham/form}" >Thêm</a>
+        <a class="btn btn-primary" th:href="@{/sanpham/form}">Thêm</a>
     </div>
 
     <div>
@@ -31,21 +31,39 @@
             </tr>
             </thead>
             <tbody>
-            <th:block th:each="sanPham : ${sanPham}">
-            <tr>
-                <td th:text="${sanPham.ma}"></td>
-                <td th:text="${sanPham.ten}"></td>
-                <td th:text="${sanPham.donViTinh}"></td>
-                <td th:text="${sanPham.donGia}"></td>
-                <td th:text="${sanPham.soLuongTon}"></td>
-                <td>
-                    <a class="btn btn-info" th:href="@{'/sanpham/update/' + ${sanPham.ma}}">Sửa</a>
-                    <a class="btn btn-danger" th:href="@{'/sanpham/delete/' + ${sanPham.ma}}">Xóa</a>
-                </td>
-            </tr>
+            <th:block th:each="sanPham : ${pagedSanPham.data}">
+                <tr>
+                    <td th:text="${sanPham.ma}"></td>
+                    <td th:text="${sanPham.ten}"></td>
+                    <td th:text="${sanPham.donViTinh}"></td>
+                    <td th:text="${sanPham.donGia}"></td>
+                    <td th:text="${sanPham.soLuongTon}"></td>
+                    <td>
+                        <a class="btn btn-info" th:href="@{'/sanpham/update/' + ${sanPham.ma}}">Sửa</a>
+                        <a class="btn btn-danger" th:href="@{'/sanpham/delete/' + ${sanPham.ma}}">Xóa</a>
+                    </td>
+                </tr>
             </th:block>
             </tbody>
         </table>
+    </div>
+    <div class="pagination">
+        <ul class="pagination justify-content-center">
+            <li th:if="${pagedSanPham.hasPreviousPage}"
+                th:classappend="${pagedSanPham.hasPreviousPage ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link"
+                   th:href="@{|/sanpham?page=${pagedSanPham.currentPage - 1}&amp;size=${size}|}">&lt;</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, pagedSanPham.totalPages - 1)}"
+                th:classappend="${pagedSanPham.currentPage == i ? 'page-item active' : 'page-item'}">
+                <a class="page-link" th:href="@{|/sanpham?page=${i}&amp;size=${size}|}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${pagedSanPham.hasNextPage}"
+                th:classappend="${pagedSanPham.hasNextPage ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link"
+                   th:href="@{|/sanpham?page=${pagedSanPham.currentPage + 1}&amp;size=${size}|}">&gt;</a>
+            </li>
+        </ul>
     </div>
 
 </div>

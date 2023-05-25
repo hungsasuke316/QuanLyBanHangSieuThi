@@ -4,12 +4,10 @@ import com.example.quanlysieuthi.data.entity.NhanVien;
 import com.example.quanlysieuthi.dto.request.NhanVienRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.service.NhanVienService;
+import com.example.quanlysieuthi.service.impl.PagedLinkedList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.LinkedList;
@@ -23,9 +21,13 @@ public class NhanVienController {
     }
 
     @GetMapping("/nhanvien")
-    public String getAll(Model model){
-        LinkedList<NhanVien> linkedList = nhanVienService.getAllNhanVien();
-        model.addAttribute("nhanVien", linkedList);
+    public String getAll(Model model,
+                         @RequestParam(defaultValue = "0") Integer page,
+                         @RequestParam(defaultValue = "10") Integer size){
+        PagedLinkedList<NhanVien> pagedNhanVien = nhanVienService.getAllNhanVien(page, size);
+        model.addAttribute("pagedNhanVien", pagedNhanVien);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "nhanvien_list";
     }
@@ -38,11 +40,16 @@ public class NhanVienController {
     }
 
     @PostMapping("/nhanvien")
-    public String createKhachHang(@ModelAttribute("nhanVien") NhanVienRequest nhanVien, Model model, RedirectAttributes redirectAttributes){
+    public String createKhachHang(@ModelAttribute("nhanVien") NhanVienRequest nhanVien,
+                                  @RequestParam(defaultValue = "0") Integer page,
+                                  @RequestParam(defaultValue = "10") Integer size,
+                                  Model model, RedirectAttributes redirectAttributes){
         try {
             nhanVienService.creatNhanVien(nhanVien);
-            LinkedList<NhanVien> linkedList = nhanVienService.getAllNhanVien();
-            model.addAttribute("nhanVien", linkedList);
+            PagedLinkedList<NhanVien> pagedNhanVien = nhanVienService.getAllNhanVien(page, size);
+            model.addAttribute("pagedNhanVien", pagedNhanVien);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
 
             return "nhanvien_list";
         }
@@ -69,18 +76,29 @@ public class NhanVienController {
     }
 
     @PostMapping("/nhanvien/update")
-    public String updateNhanVien(@ModelAttribute("nhanVien") NhanVienRequest nhanVien, Model model){
+    public String updateNhanVien(@ModelAttribute("nhanVien") NhanVienRequest nhanVien,
+                                 @RequestParam(defaultValue = "0") Integer page,
+                                 @RequestParam(defaultValue = "10") Integer size,
+                                 Model model){
         nhanVienService.updateNhanVien(nhanVien);
-        LinkedList<NhanVien> linkedList = nhanVienService.getAllNhanVien();
-        model.addAttribute("nhanVien", linkedList);
+        PagedLinkedList<NhanVien> pagedNhanVien = nhanVienService.getAllNhanVien(page, size);
+        model.addAttribute("pagedNhanVien", pagedNhanVien);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "nhanvien_list";
     }
 
     @GetMapping("/nhanvien/delete/{ma}")
-    public String deleteNhanVien(@PathVariable("ma") String ma, Model model){
+    public String deleteNhanVien(@PathVariable("ma") String ma,
+                                 @RequestParam(defaultValue = "0") Integer page,
+                                 @RequestParam(defaultValue = "10") Integer size,
+                                 Model model){
         LinkedList<NhanVien> linkedList = nhanVienService.deleteNhanVien(ma);
-        model.addAttribute("nhanVien", linkedList);
+        PagedLinkedList<NhanVien> pagedNhanVien = nhanVienService.getAllNhanVien(page, size);
+        model.addAttribute("pagedNhanVien", pagedNhanVien);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "/nhanvien_list";
     }

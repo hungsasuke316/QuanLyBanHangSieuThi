@@ -7,6 +7,9 @@ import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
 import com.example.quanlysieuthi.service.KhachHangService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -24,10 +27,18 @@ public class KhachHangServiceImpl implements KhachHangService {
     }
 
     @Override
-    public LinkedList<KhachHang> getAllKhachHang() {
-        List<KhachHang> khachHangList = this.khachHangRepository.findAll();
+    public PagedLinkedList<KhachHang> getAllKhachHang(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<KhachHang> khachHangPage = this.khachHangRepository.findAll(pageable);
+        List<KhachHang> khachHangList = khachHangPage.getContent();
         LinkedList<KhachHang> linkedList = convertToLinkedList(khachHangList);
-        return linkedList;
+
+        int totalPages = khachHangPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
     }
 
     @Override

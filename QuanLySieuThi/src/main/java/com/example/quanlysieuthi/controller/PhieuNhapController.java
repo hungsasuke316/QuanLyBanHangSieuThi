@@ -7,15 +7,16 @@ import com.example.quanlysieuthi.data.repository.SanPhamRepository;
 import com.example.quanlysieuthi.dto.request.PhieuNhapRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.service.PhieuNhapService;
+import com.example.quanlysieuthi.service.impl.PagedLinkedList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -34,9 +35,13 @@ public class PhieuNhapController {
     }
 
     @GetMapping("/phieunhap")
-    public String getAll(Model model){
-        LinkedList<PhieuNhap> linkedList = phieuNhapService.getAllPhieuNhap();
-        model.addAttribute("phieuNhap", linkedList);
+    public String getAll(Model model,
+                         @RequestParam(defaultValue = "0") Integer page,
+                         @RequestParam(defaultValue = "10") Integer size){
+        PagedLinkedList<PhieuNhap> pagedPhieuNhap = phieuNhapService.getAllPhieuNhap(page, size);
+        model.addAttribute("pagedPhieuNhap", pagedPhieuNhap);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         model.addAttribute("dateFormat", dateFormat);
@@ -61,11 +66,16 @@ public class PhieuNhapController {
     }
 
     @PostMapping("/phieunhap")
-    public String createPhieuNhap(@ModelAttribute("phieuNhap") PhieuNhapRequest phieuNhap, Model model, RedirectAttributes redirectAttributes){
+    public String createPhieuNhap(@ModelAttribute("phieuNhap") PhieuNhapRequest phieuNhap,
+                                  @RequestParam(defaultValue = "0") Integer page,
+                                  @RequestParam(defaultValue = "10") Integer size,
+                                  Model model, RedirectAttributes redirectAttributes){
         try {
             phieuNhapService.createPhieuNhap(phieuNhap);
-            LinkedList<PhieuNhap> linkedList = phieuNhapService.getAllPhieuNhap();
-            model.addAttribute("phieuNhap", linkedList);
+            PagedLinkedList<PhieuNhap> pagedPhieuNhap = phieuNhapService.getAllPhieuNhap(page, size);
+            model.addAttribute("pagedPhieuNhap", pagedPhieuNhap);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             model.addAttribute("dateFormat", dateFormat);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Khach Hang</title>
@@ -15,7 +15,7 @@
         [[${message}]]
     </div>
     <div>
-        <a class="btn btn-primary" th:href="@{/nhanvien/form}" >Thêm</a>
+        <a class="btn btn-primary" th:href="@{/nhanvien/form}">Thêm</a>
     </div>
 
     <div>
@@ -31,21 +31,37 @@
             </tr>
             </thead>
             <tbody>
-            <th:block th:each="nhanVien : ${nhanVien}">
-            <tr>
-                <td th:text="${nhanVien.ma}"></td>
-                <td th:text="${nhanVien.ten}"></td>
-                <td th:text="${nhanVien.cccd}"></td>
-                <td th:text="${nhanVien.sdt}"></td>
-                <td th:text="${nhanVien.diaChi}"></td>
-                <td>
-                    <a class="btn btn-info" th:href="@{'/nhanvien/update/' + ${nhanVien.ma}}">Sửa</a>
-                    <a class="btn btn-danger" th:href="@{'/nhanvien/delete/' + ${nhanVien.ma}}">Xóa</a>
-                </td>
-            </tr>
+            <th:block th:each="nhanVien : ${pagedNhanVien.data}">
+                <tr>
+                    <td th:text="${nhanVien.ma}"></td>
+                    <td th:text="${nhanVien.ten}"></td>
+                    <td th:text="${nhanVien.cccd}"></td>
+                    <td th:text="${nhanVien.sdt}"></td>
+                    <td th:text="${nhanVien.diaChi}"></td>
+                    <td>
+                        <a class="btn btn-info" th:href="@{'/nhanvien/update/' + ${nhanVien.ma}}">Sửa</a>
+                        <a class="btn btn-danger" th:href="@{'/nhanvien/delete/' + ${nhanVien.ma}}">Xóa</a>
+                    </td>
+                </tr>
             </th:block>
             </tbody>
         </table>
+    </div>
+    <div class="pagination">
+        <ul class="pagination justify-content-center">
+            <li th:if="${pagedNhanVien.hasPreviousPage}"
+                th:classappend="${pagedNhanVien.hasPreviousPage ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link" th:href="@{|/nhanvien?page=${pagedNhanVien.currentPage - 1}&amp;size=${size}|}">&lt;</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, pagedNhanVien.totalPages - 1)}"
+                th:classappend="${pagedNhanVien.currentPage == i ? 'page-item active' : 'page-item'}">
+                <a class="page-link" th:href="@{|/nhanvien?page=${i}&amp;size=${size}|}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${pagedNhanVien.hasNextPage}"
+                th:classappend="${pagedNhanVien.hasNextPage ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link" th:href="@{|/nhanvien?page=${pagedNhanVien.currentPage + 1}&amp;size=${size}|}">&gt;</a>
+            </li>
+        </ul>
     </div>
 
 </div>

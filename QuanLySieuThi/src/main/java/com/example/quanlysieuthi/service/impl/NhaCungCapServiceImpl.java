@@ -7,6 +7,9 @@ import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
 import com.example.quanlysieuthi.service.NhaCungCapService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -23,10 +26,18 @@ public class NhaCungCapServiceImpl implements NhaCungCapService {
     }
 
     @Override
-    public LinkedList<NhaCungCap> getAllNhaCungCap() {
-        List<NhaCungCap> nhaCungCapList = this.nhaCungCapRepository.findAll();
+    public PagedLinkedList<NhaCungCap> getAllNhaCungCap(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<NhaCungCap> nhaCungCapPage = this.nhaCungCapRepository.findAll(pageable);
+        List<NhaCungCap> nhaCungCapList = nhaCungCapPage.getContent();
         LinkedList<NhaCungCap> linkedList = convertToLinkedList(nhaCungCapList);
-        return linkedList;
+
+        int totalPages = nhaCungCapPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
     }
 
     @Override

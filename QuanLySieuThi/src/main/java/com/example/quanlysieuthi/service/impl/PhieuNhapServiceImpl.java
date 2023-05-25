@@ -7,6 +7,9 @@ import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
 import com.example.quanlysieuthi.service.PhieuNhapService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -35,10 +38,18 @@ public class PhieuNhapServiceImpl implements PhieuNhapService {
     }
 
     @Override
-    public LinkedList<PhieuNhap> getAllPhieuNhap() {
-        List<PhieuNhap> phieuNhapList = this.phieuNhapRepository.findAll();
+    public PagedLinkedList<PhieuNhap> getAllPhieuNhap(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<PhieuNhap> phieuNhapPage = this.phieuNhapRepository.findAll(pageable);
+        List<PhieuNhap> phieuNhapList = phieuNhapPage.getContent();
         LinkedList<PhieuNhap> linkedList = convertToLinkedList(phieuNhapList);
-        return linkedList;
+
+        int totalPages = phieuNhapPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
     }
 
     @Override
