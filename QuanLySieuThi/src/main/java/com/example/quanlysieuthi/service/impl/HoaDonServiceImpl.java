@@ -1,9 +1,6 @@
 package com.example.quanlysieuthi.service.impl;
 
-import com.example.quanlysieuthi.data.entity.HoaDon;
-import com.example.quanlysieuthi.data.entity.KhachHang;
-import com.example.quanlysieuthi.data.entity.NhanVien;
-import com.example.quanlysieuthi.data.entity.SanPham;
+import com.example.quanlysieuthi.data.entity.*;
 import com.example.quanlysieuthi.data.repository.HoaDonRepository;
 import com.example.quanlysieuthi.data.repository.KhachHangRepository;
 import com.example.quanlysieuthi.data.repository.NhanVienRepository;
@@ -13,6 +10,9 @@ import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
 import com.example.quanlysieuthi.service.HoaDonService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -40,10 +40,18 @@ public class HoaDonServiceImpl implements HoaDonService {
     }
 
     @Override
-    public LinkedList<HoaDon> getAllHoaDon() {
-        List<HoaDon> hoaDonList = this.hoaDonRepository.findAll();
+    public PagedLinkedList<HoaDon> getAllHoaDon(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<HoaDon> hoaDonPage = this.hoaDonRepository.findAll(pageable);
+        List<HoaDon> hoaDonList = hoaDonPage.getContent();
         LinkedList<HoaDon> linkedList = convertToLinkedList(hoaDonList);
-        return linkedList;
+
+        int totalPages = hoaDonPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
     }
 
     @Override

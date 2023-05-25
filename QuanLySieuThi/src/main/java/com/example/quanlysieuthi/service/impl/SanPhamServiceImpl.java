@@ -7,6 +7,9 @@ import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
 import com.example.quanlysieuthi.service.SanPhamService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -23,10 +26,17 @@ public class SanPhamServiceImpl implements SanPhamService {
     }
 
     @Override
-    public LinkedList<SanPham> getAllSanPham() {
-        List<SanPham> sanPhamList = this.sanPhamRepository.findAll();
+    public PagedLinkedList<SanPham> getAllSanPham(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<SanPham> sanPhamPage = this.sanPhamRepository.findAll(pageable);
+        List<SanPham> sanPhamList = sanPhamPage.getContent();
         LinkedList<SanPham> linkedList = convertToLinkedList(sanPhamList);
-        return linkedList;
+
+        int totalPages = sanPhamPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
     }
 
     @Override

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Hoa Don</title>
@@ -15,7 +15,7 @@
         [[${message}]]
     </div>
     <div>
-        <a class="btn btn-primary" th:href="@{/hoadon/form}" >Thêm</a>
+        <a class="btn btn-primary" th:href="@{/hoadon/form}">Thêm</a>
         <label for="tuNgay">Từ ngày:</label>
         <input type="date" id="tuNgay" name="tuNgay"/>
 
@@ -40,22 +40,40 @@
             </tr>
             </thead>
             <tbody>
-            <th:block th:each="hoaDon : ${hoaDon}">
-            <tr>
-                <td th:text="${hoaDon.ma}"></td>
-                <td th:text="${dateFormat.format(hoaDon.ngayLapHoaDon)}"></td>
-                <td th:text="${hoaDon.nhanVien.ma}"></td>
-                <td th:text="${hoaDon.khachHang.ma}"></td>
-                <td th:text="${hoaDon.sanPham.ma}"></td>
-                <td th:text="${hoaDon.soLuong}"></td>
-                <td th:text="${hoaDon.tongTien}"></td>
-                <td>
-                    <a class="btn btn-info" th:href="@{'/hoadon/chitiet/' + ${hoaDon.ma}}">Xem chi tiết</a>
-                </td>
-            </tr>
+            <th:block th:each="hoaDon : ${pagedHoaDon.data}">
+                <tr>
+                    <td th:text="${hoaDon.ma}"></td>
+                    <td th:text="${dateFormat.format(hoaDon.ngayLapHoaDon)}"></td>
+                    <td th:text="${hoaDon.nhanVien.ma}"></td>
+                    <td th:text="${hoaDon.khachHang.ma}"></td>
+                    <td th:text="${hoaDon.sanPham.ma}"></td>
+                    <td th:text="${hoaDon.soLuong}"></td>
+                    <td th:text="${hoaDon.tongTien}"></td>
+                    <td>
+                        <a class="btn btn-info" th:href="@{'/hoadon/chitiet/' + ${hoaDon.ma}}">Xem chi tiết</a>
+                    </td>
+                </tr>
             </th:block>
             </tbody>
         </table>
+    </div>
+    <div class="pagination">
+        <ul class="pagination justify-content-center">
+            <li th:if="${pagedHoaDon.hasPreviousPage}"
+                th:classappend="${pagedHoaDon.hasPreviousPage ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link"
+                   th:href="@{|/hoadon?page=${pagedHoaDon.currentPage - 1}&amp;size=${size}|}">&lt;</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, pagedHoaDon.totalPages - 1)}"
+                th:classappend="${pagedHoaDon.currentPage == i ? 'page-item active' : 'page-item'}">
+                <a class="page-link" th:href="@{|/hoadon?page=${i}&amp;size=${size}|}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${pagedHoaDon.hasNextPage}"
+                th:classappend="${pagedHoaDon.hasNextPage ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link"
+                   th:href="@{|/hoadon?page=${pagedHoaDon.currentPage + 1}&amp;size=${size}|}">&gt;</a>
+            </li>
+        </ul>
     </div>
 
 </div>

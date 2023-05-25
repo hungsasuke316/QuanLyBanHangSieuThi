@@ -7,6 +7,9 @@ import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
 import com.example.quanlysieuthi.service.NhanVienService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -24,10 +27,18 @@ public class NhanVienServiceImpl implements NhanVienService {
     }
 
     @Override
-    public LinkedList<NhanVien> getAllNhanVien() {
-        List<NhanVien> nhanVienList = this.nhanVienRepository.findAll();
+    public PagedLinkedList<NhanVien> getAllNhanVien(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<NhanVien> nhanVienPage = this.nhanVienRepository.findAll(pageable);
+        List<NhanVien> nhanVienList = nhanVienPage.getContent();
         LinkedList<NhanVien> linkedList = convertToLinkedList(nhanVienList);
-        return linkedList;
+
+        int totalPages = nhanVienPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
     }
 
     @Override

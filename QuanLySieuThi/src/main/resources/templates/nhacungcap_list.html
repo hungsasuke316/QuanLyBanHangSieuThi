@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Nha Cung Cap</title>
@@ -7,6 +7,11 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous">
+    <style>
+        .pagination {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -15,7 +20,7 @@
         [[${message}]]
     </div>
     <div>
-        <a class="btn btn-primary" th:href="@{/nhacungcap/form}" >Thêm</a>
+        <a class="btn btn-primary" th:href="@{/nhacungcap/form}">Thêm</a>
     </div>
 
     <div>
@@ -28,18 +33,36 @@
             </tr>
             </thead>
             <tbody>
-            <th:block th:each="nhaCungCap : ${nhaCungCap}">
-            <tr>
-                <td th:text="${nhaCungCap.ma}"></td>
-                <td th:text="${nhaCungCap.ten}"></td>
-                <td>
-                    <a class="btn btn-info" th:href="@{'/nhacungcap/update/' + ${nhaCungCap.ma}}">Sửa</a>
-                    <a class="btn btn-danger" th:href="@{'/nhacungcap/delete/' + ${nhaCungCap.ma}}">Xóa</a>
-                </td>
-            </tr>
+            <th:block th:each="nhaCungCap : ${pagedNhaCungCap.data}">
+                <tr>
+                    <td th:text="${nhaCungCap.ma}"></td>
+                    <td th:text="${nhaCungCap.ten}"></td>
+                    <td>
+                        <a class="btn btn-info" th:href="@{'/nhacungcap/update/' + ${nhaCungCap.ma}}">Sửa</a>
+                        <a class="btn btn-danger" th:href="@{'/nhacungcap/delete/' + ${nhaCungCap.ma}}">Xóa</a>
+                    </td>
+                </tr>
             </th:block>
             </tbody>
         </table>
+    </div>
+    <div class="pagination">
+        <ul class="pagination justify-content-center">
+            <li th:if="${pagedNhaCungCap.hasPreviousPage}"
+                th:classappend="${pagedNhaCungCap.hasPreviousPage ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link"
+                   th:href="@{|/nhacungcap?page=${pagedNhaCungCap.currentPage - 1}&amp;size=${size}|}">&lt;</a>
+            </li>
+            <li th:each="i : ${#numbers.sequence(0, pagedNhaCungCap.totalPages - 1)}"
+                th:classappend="${pagedNhaCungCap.currentPage == i ? 'page-item active' : 'page-item'}">
+                <a class="page-link" th:href="@{|/nhacungcap?page=${i}&amp;size=${size}|}" th:text="${i + 1}"></a>
+            </li>
+            <li th:if="${pagedNhaCungCap.hasNextPage}"
+                th:classappend="${pagedNhaCungCap.hasNextPage ? 'page-item' : 'page-item disabled'}">
+                <a class="page-link"
+                   th:href="@{|/nhacungcap?page=${pagedNhaCungCap.currentPage + 1}&amp;size=${size}|}">&gt;</a>
+            </li>
+        </ul>
     </div>
 
 </div>

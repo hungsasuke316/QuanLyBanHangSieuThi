@@ -4,12 +4,10 @@ import com.example.quanlysieuthi.data.entity.SanPham;
 import com.example.quanlysieuthi.dto.request.SanPhamRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.service.SanPhamService;
+import com.example.quanlysieuthi.service.impl.PagedLinkedList;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.LinkedList;
@@ -23,9 +21,13 @@ public class SanPhamController {
     }
 
     @GetMapping("/sanpham")
-    public String getAll(Model model){
-        LinkedList<SanPham> linkedList = sanPhamService.getAllSanPham();
-        model.addAttribute("sanPham", linkedList);
+    public String getAll(Model model,
+                         @RequestParam(defaultValue = "0") Integer page,
+                         @RequestParam(defaultValue = "10") Integer size){
+        PagedLinkedList<SanPham> pagedSanPham = sanPhamService.getAllSanPham(page, size);
+        model.addAttribute("pagedSanPham", pagedSanPham);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "sanpham_list";
     }
@@ -38,11 +40,16 @@ public class SanPhamController {
     }
 
     @PostMapping("/sanpham")
-    public String createSanPham(@ModelAttribute("sanPham") SanPhamRequest sanPham, Model model, RedirectAttributes redirectAttributes){
+    public String createSanPham(@ModelAttribute("sanPham") SanPhamRequest sanPham,
+                                @RequestParam(defaultValue = "0") Integer page,
+                                @RequestParam(defaultValue = "10") Integer size,
+                                Model model, RedirectAttributes redirectAttributes){
         try {
             sanPhamService.createSanPham(sanPham);
-            LinkedList<SanPham> linkedList = sanPhamService.getAllSanPham();
-            model.addAttribute("sanPham", linkedList);
+            PagedLinkedList<SanPham> pagedSanPham = sanPhamService.getAllSanPham(page, size);
+            model.addAttribute("pagedSanPham", pagedSanPham);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
 
             return "sanpham_list";
         }
@@ -69,18 +76,29 @@ public class SanPhamController {
     }
 
     @PostMapping("/sanpham/update")
-    public String updateSanPham(@ModelAttribute("sanPham") SanPhamRequest sanPham, Model model){
+    public String updateSanPham(@ModelAttribute("sanPham") SanPhamRequest sanPham,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "10") int size,
+                                Model model){
         sanPhamService.updateSanPham(sanPham);
-        LinkedList<SanPham> linkedList = sanPhamService.getAllSanPham();
-        model.addAttribute("sanPham", linkedList);
+        PagedLinkedList<SanPham> pagedSanPham = sanPhamService.getAllSanPham(page, size);
+        model.addAttribute("pagedSanPham", pagedSanPham);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "sanpham_list";
     }
 
     @GetMapping("/sanpham/delete/{ma}")
-    public String deleteSanPham(@PathVariable("ma") String ma, Model model){
+    public String deleteSanPham(@PathVariable("ma") String ma,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "10") int size,
+                                Model model){
         LinkedList<SanPham> linkedList = sanPhamService.deleteSanPham(ma);
-        model.addAttribute("sanPham", linkedList);
+        PagedLinkedList<SanPham> pagedSanPham = sanPhamService.getAllSanPham(page, size);
+        model.addAttribute("pagedSanPham", pagedSanPham);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "/sanpham_list";
     }

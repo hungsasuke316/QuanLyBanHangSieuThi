@@ -5,13 +5,12 @@ import com.example.quanlysieuthi.data.repository.NhaCungCapRepository;
 import com.example.quanlysieuthi.dto.request.NhaCungCapRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.service.NhaCungCapService;
+import com.example.quanlysieuthi.service.impl.PagedLinkedList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.LinkedList;
 
 @Controller
 public class NhaCungCapController {
@@ -24,9 +23,13 @@ public class NhaCungCapController {
     }
 
     @GetMapping("/nhacungcap")
-    public String getAll(Model model){
-        LinkedList<NhaCungCap> linkedList = nhaCungCapService.getAllNhaCungCap();
-        model.addAttribute("nhaCungCap", linkedList);
+    public String getAll(Model model,
+                         @RequestParam(defaultValue = "0") Integer page,
+                         @RequestParam(defaultValue = "10") Integer size){
+        PagedLinkedList<NhaCungCap> pagedNhaCungCap = nhaCungCapService.getAllNhaCungCap(page, size);
+        model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "nhacungcap_list";
     }
@@ -39,11 +42,16 @@ public class NhaCungCapController {
     }
 
     @PostMapping("/nhacungcap")
-    public String createNhaCungCap(@ModelAttribute("nhaCungCap") NhaCungCapRequest nhaCungCap, Model model, RedirectAttributes redirectAttributes){
+    public String createNhaCungCap(@ModelAttribute("nhaCungCap") NhaCungCapRequest nhaCungCap,
+                                   @RequestParam(defaultValue = "0") Integer page,
+                                   @RequestParam(defaultValue = "10") Integer size,
+                                   Model model, RedirectAttributes redirectAttributes){
         try {
             nhaCungCapService.creatNhaCungCap(nhaCungCap);
-            LinkedList<NhaCungCap> linkedList = nhaCungCapService.getAllNhaCungCap();
-            model.addAttribute("nhaCungCap", linkedList);
+            PagedLinkedList<NhaCungCap> pagedNhaCungCap = nhaCungCapService.getAllNhaCungCap(page, size);
+            model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
 
             return "nhacungcap_list";
         }
@@ -55,7 +63,8 @@ public class NhaCungCapController {
     }
 
     @GetMapping("/nhacungcap/update/{ma}")
-    public String updateNhaCungCap(@PathVariable("ma") String ma, Model model, RedirectAttributes redirectAttributes){
+    public String updateNhaCungCap(@PathVariable("ma") String ma,
+                                   Model model, RedirectAttributes redirectAttributes){
         try {
             NhaCungCap nhaCungCap = nhaCungCapService.getNhaCungCap(ma);
             model.addAttribute("nhaCungCap", nhaCungCap);
@@ -70,18 +79,29 @@ public class NhaCungCapController {
     }
 
     @PostMapping("/nhacungcap/update")
-    public String updateNhaCungCap(@ModelAttribute("nhaCungCap") NhaCungCapRequest nhaCungCap, Model model){
+    public String updateNhaCungCap(@ModelAttribute("nhaCungCap") NhaCungCapRequest nhaCungCap,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size,
+                                   Model model){
         nhaCungCapService.updateNhaCungCap(nhaCungCap);
-        LinkedList<NhaCungCap> linkedList = nhaCungCapService.getAllNhaCungCap();
-        model.addAttribute("nhaCungCap", linkedList);
+        PagedLinkedList<NhaCungCap> pagedNhaCungCap = nhaCungCapService.getAllNhaCungCap(page, size);
+        model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "nhacungcap_list";
     }
 
     @GetMapping("/nhacungcap/delete/{ma}")
-    public String deleteNhaCungCap(@PathVariable("ma") String ma, Model model){
-        LinkedList<NhaCungCap> linkedList = nhaCungCapService.deleteNhaCungCap(ma);
-        model.addAttribute("nhaCungCap", linkedList);
+    public String deleteNhaCungCap(@PathVariable("ma") String ma,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size,
+                                   Model model){
+        nhaCungCapService.deleteNhaCungCap(ma);
+        PagedLinkedList<NhaCungCap> pagedNhaCungCap = nhaCungCapService.getAllNhaCungCap(page, size);
+        model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "/nhacungcap_list";
     }

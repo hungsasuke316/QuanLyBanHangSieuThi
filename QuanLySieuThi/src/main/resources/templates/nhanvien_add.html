@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Nha Cung Cap</title>
@@ -24,7 +24,7 @@
         <input type="text" th:field="*{ten}" name="ten"
                placeholder="Tên Nhân viên" class="form-control mb-4 col-4"/>
 
-        <input type="number" th:field="*{cccd}" name="cccd"
+        <input type="number" th:field="*{cccd}" name="cccd" maxlength="13"
                placeholder="Căn cước công dân" class="form-control mb-4 col-4"/>
 
         <input type="number" th:field="*{sdt}" name="sdt"
@@ -33,12 +33,12 @@
         <input type="text" th:field="*{diaChi}" name="sdt"
                placeholder="Địa chỉ" class="form-control mb-4 col-4"/>
 
-        <button type="submit" class="btn btn-info col-2"> Save </button>
+        <button type="submit" class="btn btn-info col-2"> Save</button>
     </form>
 
     <hr>
 
-    <a class="btn btn-outline-primary" th:href = "@{/nhanvien}"> Back to List</a>
+    <a class="btn btn-outline-primary" th:href="@{/nhanvien}"> Back to List</a>
 </div>
 </body>
 </html>

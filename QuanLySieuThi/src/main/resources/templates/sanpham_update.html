@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>San Pham</title>
@@ -18,7 +18,7 @@
 
     <form action="#" th:action="@{/sanpham/update}" th:object="${sanPham}"
           method="POST">
-        <input type="text" th:field="${sanPham.ma}"  name="ma" readonly
+        <input type="text" th:field="${sanPham.ma}" name="ma" readonly
                placeholder="Mã Sản Phẩm" class="form-control mb-4 col-4"/>
 
         <input type="text" th:field="${sanPham.ten}" name="ten"
@@ -30,16 +30,16 @@
         <input type="text" th:field="${sanPham.donGia}" name="donGia"
                placeholder="Đơn giá" class="form-control mb-4 col-4"/>
 
-        <input type="text" th:field="${sanPham.soLuongTon}" name="soLuongTon"
+        <input type="text" th:field="${sanPham.soLuongTon}" name="soLuongTon" readonly
                placeholder="Số lượng tồn" class="form-control mb-4 col-4"/>
 
 
-        <button type="submit" class="btn btn-info col-2"> Save </button>
+        <button type="submit" class="btn btn-info col-2"> Save</button>
     </form>
 
     <hr>
 
-    <a class="btn btn-outline-primary" th:href = "@{/sanpham}"> Back to List</a>
+    <a class="btn btn-outline-primary" th:href="@{/sanpham}"> Back to List</a>
 </div>
 </body>
 </html>
