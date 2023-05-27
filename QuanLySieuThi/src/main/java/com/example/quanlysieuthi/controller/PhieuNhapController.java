@@ -6,14 +6,13 @@ import com.example.quanlysieuthi.data.repository.NhanVienRepository;
 import com.example.quanlysieuthi.data.repository.SanPhamRepository;
 import com.example.quanlysieuthi.dto.request.PhieuNhapRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
+import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
 import com.example.quanlysieuthi.service.PhieuNhapService;
 import com.example.quanlysieuthi.service.impl.PagedLinkedList;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
@@ -79,13 +78,23 @@ public class PhieuNhapController {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             model.addAttribute("dateFormat", dateFormat);
+            redirectAttributes.addFlashAttribute("successMessage", "Tạo phiếu nhập thành công");
 
-            return "phieunhap_list";
+            return "redirect:/phieunhap";
         }
         catch (ResourceNotAcceptException e){
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/phieunhap/form";
         }
+    }
+
+    @GetMapping("/phieunhap/chitiet/{ma}")
+    public ResponseEntity<PhieuNhap> detailPhieuNhap(@PathVariable("ma") String ma){
+        PhieuNhap phieuNhap = this.phieuNhapService.getPhieuNhap(ma);
+        if (phieuNhap == null){
+            throw new ResourceNotFoundException("Không tìm thấy chi tiết phiếu nhập");
+        }
+        return ResponseEntity.ok().body(phieuNhap);
     }
 }

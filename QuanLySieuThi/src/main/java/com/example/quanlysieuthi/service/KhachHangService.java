@@ -4,13 +4,12 @@ import com.example.quanlysieuthi.data.entity.KhachHang;
 import com.example.quanlysieuthi.dto.request.KhachHangRequest;
 import com.example.quanlysieuthi.service.impl.PagedLinkedList;
 
-import java.util.LinkedList;
 
 public interface KhachHangService {
     public PagedLinkedList<KhachHang> getAllKhachHang(Integer pageNumber, Integer pageSize);
     public void creatKhachHang(KhachHangRequest dto);
     public void updateKhachHang(KhachHangRequest dto);
-    public LinkedList<KhachHang> deleteKhachHang(String ma);
+    public void deleteKhachHang(String ma);
 
     public KhachHang getKhachHang(String ma);
 }

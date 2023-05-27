@@ -1,7 +1,9 @@
 package com.example.quanlysieuthi.service.impl;
 
 import com.example.quanlysieuthi.data.entity.NhaCungCap;
+import com.example.quanlysieuthi.data.entity.PhieuNhap;
 import com.example.quanlysieuthi.data.repository.NhaCungCapRepository;
+import com.example.quanlysieuthi.data.repository.PhieuNhapRepository;
 import com.example.quanlysieuthi.dto.request.NhaCungCapRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
@@ -18,10 +20,12 @@ import java.util.List;
 @Service
 public class NhaCungCapServiceImpl implements NhaCungCapService {
     public final NhaCungCapRepository nhaCungCapRepository;
+    public final PhieuNhapRepository phieuNhapRepository;
     public final ModelMapper modelMapper;
 
-    public NhaCungCapServiceImpl(NhaCungCapRepository nhaCungCapRepository, ModelMapper modelMapper) {
+    public NhaCungCapServiceImpl(NhaCungCapRepository nhaCungCapRepository, PhieuNhapRepository phieuNhapRepository, ModelMapper modelMapper) {
         this.nhaCungCapRepository = nhaCungCapRepository;
+        this.phieuNhapRepository = phieuNhapRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -52,7 +56,7 @@ public class NhaCungCapServiceImpl implements NhaCungCapService {
         else {
             for (NhaCungCap nhaCungCap : linkedList){
                 if (dto.getMa().equals(nhaCungCap.getMa())){
-                    throw new ResourceNotAcceptException("Nha Cung Cap already exist");
+                    throw new ResourceNotAcceptException("Mã nhà cung cấp đã tồn tại");
                 }
             }
             NhaCungCap nhaCungCap = modelMapper.map(dto, NhaCungCap.class);
@@ -86,14 +90,26 @@ public class NhaCungCapServiceImpl implements NhaCungCapService {
     }
 
     @Override
-    public LinkedList<NhaCungCap> deleteNhaCungCap(String ma) {
-        NhaCungCap nhaCungCap =nhaCungCapRepository.findById(ma).get();
+    public void deleteNhaCungCap(String ma) {
+        NhaCungCap nhaCungCap =nhaCungCapRepository.findById(ma).orElse(null);
+        if (nhaCungCap == null) {
+            throw new ResourceNotFoundException("Không tìm thấy nhà cung cấp có mã " + ma);
+        }
+
+        List<PhieuNhap> phieuNhapList = this.phieuNhapRepository.findAll();
+        boolean hasPhieuNhap = false;
+        for (PhieuNhap phieuNhap : phieuNhapList) {
+            if (ma.equals(phieuNhap.getSanPham().getMa())) {
+                hasPhieuNhap = true;
+                break;
+            }
+        }
+
+        if (hasPhieuNhap) {
+            throw new ResourceNotAcceptException("Nhà cung cấp có trong phiếu nhập. Không thể xóa!!!");
+        }
+
         nhaCungCapRepository.delete(nhaCungCap);
-
-        List<NhaCungCap> nhaCungCapList = this.nhaCungCapRepository.findAll();
-        LinkedList<NhaCungCap> linkedList = convertToLinkedList(nhaCungCapList);
-
-        return linkedList;
     }
 
     public LinkedList<NhaCungCap> convertToLinkedList(List<NhaCungCap> nhaCungCapList){

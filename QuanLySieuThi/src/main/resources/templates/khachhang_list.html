@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Khach Hang</title>
+    <title>Khách Hàng</title>
     <link rel="stylesheet" type="text/css"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
@@ -10,9 +10,12 @@
 </head>
 <body>
 <div class="container">
-    <div><h1>Danh Sach Khach Hang</h1></div>
-    <div th:if="${message}" class="alert alert-success text-center">
-        [[${message}]]
+    <div><h1>Danh Sách Khách Hàng</h1></div>
+    <div th:if="${successMessage}" class="alert alert-success text-center">
+        [[${successMessage}]]
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger text-center">
+        [[${errorMessage}]]
     </div>
     <div>
         <a class="btn btn-primary" th:href="@{/khachhang/form}">Thêm</a>

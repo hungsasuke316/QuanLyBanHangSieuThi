@@ -8,6 +8,6 @@ import lombok.Setter;
 public class KhachHangRequest {
     private String ma;
     private String ten;
-    private Integer cccd;
+    private String cccd;
     private Integer sdt;
 }

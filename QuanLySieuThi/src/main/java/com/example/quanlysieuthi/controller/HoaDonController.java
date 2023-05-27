@@ -6,14 +6,13 @@ import com.example.quanlysieuthi.data.repository.NhanVienRepository;
 import com.example.quanlysieuthi.data.repository.SanPhamRepository;
 import com.example.quanlysieuthi.dto.request.HoaDonRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
+import com.example.quanlysieuthi.exceptions.ResourceNotFoundException;
 import com.example.quanlysieuthi.service.HoaDonService;
 import com.example.quanlysieuthi.service.impl.PagedLinkedList;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
@@ -78,13 +77,23 @@ public class HoaDonController {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             model.addAttribute("dateFormat", dateFormat);
+            redirectAttributes.addFlashAttribute("successMessage", "Tạo hóa đơn thành công");
 
-            return "hoadon_list";
+            return "redirect:/hoadon";
         }
         catch (ResourceNotAcceptException e){
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/hoadon/form";
         }
+    }
+
+    @GetMapping("/hoadon/chitiet/{ma}")
+    public ResponseEntity<HoaDon> detailHoaDon(@PathVariable("ma") String ma){
+        HoaDon hoaDon = this.hoaDonService.getHoaDon(ma);
+        if (hoaDon == null){
+            throw new ResourceNotFoundException("Không tìm thấy chi tiết hóa đơn");
+        }
+        return ResponseEntity.ok().body(hoaDon);
     }
 }

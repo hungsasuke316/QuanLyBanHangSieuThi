@@ -1,6 +1,8 @@
 package com.example.quanlysieuthi.service.impl;
 
+import com.example.quanlysieuthi.data.entity.HoaDon;
 import com.example.quanlysieuthi.data.entity.KhachHang;
+import com.example.quanlysieuthi.data.repository.HoaDonRepository;
 import com.example.quanlysieuthi.data.repository.KhachHangRepository;
 import com.example.quanlysieuthi.dto.request.KhachHangRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
@@ -19,10 +21,12 @@ import java.util.List;
 public class KhachHangServiceImpl implements KhachHangService {
 
     public final KhachHangRepository khachHangRepository;
+    public final HoaDonRepository hoaDonRepository;
     public final ModelMapper modelMapper;
 
-    public KhachHangServiceImpl(KhachHangRepository khachHangRepository, ModelMapper modelMapper) {
+    public KhachHangServiceImpl(KhachHangRepository khachHangRepository, HoaDonRepository hoaDonRepository, ModelMapper modelMapper) {
         this.khachHangRepository = khachHangRepository;
+        this.hoaDonRepository = hoaDonRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -53,7 +57,7 @@ public class KhachHangServiceImpl implements KhachHangService {
         else {
             for (KhachHang khachHang : linkedList){
                 if (dto.getMa().equals(khachHang.getMa())){
-                    throw new ResourceNotAcceptException("Khach Hang already exist");
+                    throw new ResourceNotAcceptException("Mã khách hàng đã tồn tại!!");
                 }
             }
             KhachHang khachHang = modelMapper.map(dto, KhachHang.class);
@@ -71,14 +75,26 @@ public class KhachHangServiceImpl implements KhachHangService {
     }
 
     @Override
-    public LinkedList<KhachHang> deleteKhachHang(String ma) {
-        KhachHang khachHang =khachHangRepository.findById(ma).get();
+    public void deleteKhachHang(String ma) {
+        KhachHang khachHang =khachHangRepository.findById(ma).orElse(null);
+        if (khachHang == null) {
+            throw new ResourceNotFoundException("Không tìm thấy khách hàng có mã " + ma);
+        }
+
+        List<HoaDon> hoaDonList = this.hoaDonRepository.findAll();
+        boolean hasHoaDon = false;
+        for (HoaDon hoaDon : hoaDonList) {
+            if (ma.equals(hoaDon.getSanPham().getMa())) {
+                hasHoaDon = true;
+                break;
+            }
+        }
+
+        if (hasHoaDon) {
+            throw new ResourceNotAcceptException("Khách hàng có trong hóa đơn. Không thể xóa!!!");
+        }
+
         khachHangRepository.delete(khachHang);
-
-        List<KhachHang> khachHangList = this.khachHangRepository.findAll();
-        LinkedList<KhachHang> linkedList = convertToLinkedList(khachHangList);
-
-        return linkedList;
     }
 
     @Override

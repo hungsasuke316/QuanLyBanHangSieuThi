@@ -21,7 +21,7 @@ public class SanPham {
     private String ma;
     private String ten;
     private String donViTinh;
-    private Integer donGia;
+    private Long donGia;
     private Integer soLuongTon;
 
     @JsonIgnore

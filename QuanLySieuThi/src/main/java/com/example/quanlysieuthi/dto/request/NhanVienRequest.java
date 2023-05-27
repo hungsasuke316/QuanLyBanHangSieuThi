@@ -8,7 +8,7 @@ import lombok.Setter;
 public class NhanVienRequest {
     private String ma;
     private String ten;
-    private Integer cccd;
+    private String cccd;
     private Integer sdt;
     private String diaChi;
 }
