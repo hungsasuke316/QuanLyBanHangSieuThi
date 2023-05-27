@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.LinkedList;
 
 @Controller
 public class NhanVienController {
@@ -50,11 +49,12 @@ public class NhanVienController {
             model.addAttribute("pagedNhanVien", pagedNhanVien);
             model.addAttribute("page", page);
             model.addAttribute("size", size);
+            redirectAttributes.addFlashAttribute("successMessage", "Tạo nhân viên thành công!");
 
-            return "nhanvien_list";
+            return "redirect:/nhanvien";
         }
         catch (ResourceNotAcceptException e){
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/nhanvien/form";
         }
@@ -69,7 +69,7 @@ public class NhanVienController {
             return "nhanvien_update";
         }
         catch (ResourceNotAcceptException e){
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/nhanvien/form";
         }
@@ -79,27 +79,36 @@ public class NhanVienController {
     public String updateNhanVien(@ModelAttribute("nhanVien") NhanVienRequest nhanVien,
                                  @RequestParam(defaultValue = "0") Integer page,
                                  @RequestParam(defaultValue = "10") Integer size,
-                                 Model model){
+                                 Model model, RedirectAttributes redirectAttributes){
         nhanVienService.updateNhanVien(nhanVien);
         PagedLinkedList<NhanVien> pagedNhanVien = nhanVienService.getAllNhanVien(page, size);
         model.addAttribute("pagedNhanVien", pagedNhanVien);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
+        redirectAttributes.addFlashAttribute("successMessage", "Sửa nhân viên thành công!");
 
-        return "nhanvien_list";
+        return "redirect:/nhanvien";
     }
 
     @GetMapping("/nhanvien/delete/{ma}")
     public String deleteNhanVien(@PathVariable("ma") String ma,
                                  @RequestParam(defaultValue = "0") Integer page,
                                  @RequestParam(defaultValue = "10") Integer size,
-                                 Model model){
-        LinkedList<NhanVien> linkedList = nhanVienService.deleteNhanVien(ma);
-        PagedLinkedList<NhanVien> pagedNhanVien = nhanVienService.getAllNhanVien(page, size);
-        model.addAttribute("pagedNhanVien", pagedNhanVien);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
+                                 Model model, RedirectAttributes redirectAttributes){
+        try{
+            nhanVienService.deleteNhanVien(ma);
+            PagedLinkedList<NhanVien> pagedNhanVien = nhanVienService.getAllNhanVien(page, size);
+            model.addAttribute("pagedNhanVien", pagedNhanVien);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa nhân viên thành công!");
 
-        return "/nhanvien_list";
+            return "redirect:/nhanvien";
+        }
+        catch (ResourceNotAcceptException e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+            return "redirect:/nhanvien/?page=" + page + "&size=" + size;
+        }
     }
 }

@@ -10,5 +10,4 @@ public class SanPhamRequest {
     private String ten;
     private String donViTinh;
     private Integer donGia;
-    private Integer soLuongTon;
 }

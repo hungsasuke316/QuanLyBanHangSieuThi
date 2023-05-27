@@ -16,7 +16,7 @@ public class HoaDon {
     private String ma;
     private Date ngayLapHoaDon;
     private Integer soLuong;
-    private Integer tongTien;
+    private Long tongTien;
 
     @ManyToOne
     @JoinColumn(name = "ma_nhan_vien")

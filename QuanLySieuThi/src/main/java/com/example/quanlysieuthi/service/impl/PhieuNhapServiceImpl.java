@@ -59,11 +59,11 @@ public class PhieuNhapServiceImpl implements PhieuNhapService {
         PhieuNhap phieuNhap = modelMapper.map(dto, PhieuNhap.class);
 
         NhanVien nhanVien = this.nhanVienRepository.findById(dto.getNhanVien())
-                .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay nhan vien" ));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhân viên" ));
         NhaCungCap nhaCungCap = this.nhaCungCapRepository.findById(dto.getNhaCungCap())
-                .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay nha cung cap" ));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhà cung cấp" ));
         SanPham sanPham = this.sanPhamRepository.findById(dto.getSanPham())
-                .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay san pham" ));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm" ));
 
         phieuNhap.setNhanVien(nhanVien);
         phieuNhap.setNhaCungCap(nhaCungCap);
@@ -84,18 +84,40 @@ public class PhieuNhapServiceImpl implements PhieuNhapService {
         if (linkedList.isEmpty()){
             linkedList.addFirst(phieuNhap);
             phieuNhapRepository.saveAll(linkedList);
+            sanPham.setSoLuongTon(sanPham.getSoLuongTon() + phieuNhap.getSoLuong());
+            sanPhamRepository.save(sanPham);
         }
         else {
             for (PhieuNhap item : linkedList){
                 if (dto.getMa().equals(item.getMa())){
-                    throw new ResourceNotAcceptException("Ma phieu nhap da ton tai!");
+                    throw new ResourceNotAcceptException("Mã phiếu nhập đã tồn tại!");
                 }
             }
 
             linkedList.addFirst(phieuNhap);
             phieuNhapRepository.saveAll(linkedList);
+            sanPham.setSoLuongTon(sanPham.getSoLuongTon() + phieuNhap.getSoLuong());
+            sanPhamRepository.save(sanPham);
         }
 
+    }
+
+    @Override
+    public PhieuNhap getPhieuNhap(String ma) {
+        List<PhieuNhap> phieuNhapList = this.phieuNhapRepository.findAll();
+        LinkedList<PhieuNhap> linkedList = convertToLinkedList(phieuNhapList);
+        PhieuNhap phieuNhap = new PhieuNhap();
+        if (linkedList.isEmpty()){
+            throw new ResourceNotFoundException("Danh sach trong!!!");
+        }
+        else {
+            for (PhieuNhap item : linkedList){
+                if (ma.equals(item.getMa())){
+                    phieuNhap = item;
+                }
+            }
+            return  phieuNhap;
+        }
     }
 
     public LinkedList<PhieuNhap> convertToLinkedList(List<PhieuNhap> phieuNhapList){

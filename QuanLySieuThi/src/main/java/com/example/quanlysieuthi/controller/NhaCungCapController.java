@@ -52,8 +52,9 @@ public class NhaCungCapController {
             model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
             model.addAttribute("page", page);
             model.addAttribute("size", size);
+            redirectAttributes.addFlashAttribute("successMessage", "Tạo nhà cung cấp thành công!");
 
-            return "nhacungcap_list";
+            return "redirect:/nhacungcap";
         }
         catch (ResourceNotAcceptException e){
             redirectAttributes.addFlashAttribute("message", e.getMessage());
@@ -82,27 +83,36 @@ public class NhaCungCapController {
     public String updateNhaCungCap(@ModelAttribute("nhaCungCap") NhaCungCapRequest nhaCungCap,
                                    @RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "10") int size,
-                                   Model model){
+                                   Model model, RedirectAttributes redirectAttributes){
         nhaCungCapService.updateNhaCungCap(nhaCungCap);
         PagedLinkedList<NhaCungCap> pagedNhaCungCap = nhaCungCapService.getAllNhaCungCap(page, size);
         model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
+        redirectAttributes.addFlashAttribute("successMessage", "Sửa nhà cung cấp thành công!");
 
-        return "nhacungcap_list";
+        return "redirect:/nhacungcap";
     }
 
     @GetMapping("/nhacungcap/delete/{ma}")
     public String deleteNhaCungCap(@PathVariable("ma") String ma,
                                    @RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "10") int size,
-                                   Model model){
-        nhaCungCapService.deleteNhaCungCap(ma);
-        PagedLinkedList<NhaCungCap> pagedNhaCungCap = nhaCungCapService.getAllNhaCungCap(page, size);
-        model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
+                                   Model model, RedirectAttributes redirectAttributes){
+        try{
+            nhaCungCapService.deleteNhaCungCap(ma);
+            PagedLinkedList<NhaCungCap> pagedNhaCungCap = nhaCungCapService.getAllNhaCungCap(page, size);
+            model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa nhà cung cấp thành công!");
 
-        return "/nhacungcap_list";
+            return "redirect:/nhacungcap";
+        }
+        catch (ResourceNotAcceptException e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+            return "redirect:/nhacungcap/?page=" + page + "&size=" + size;
+        }
     }
 }

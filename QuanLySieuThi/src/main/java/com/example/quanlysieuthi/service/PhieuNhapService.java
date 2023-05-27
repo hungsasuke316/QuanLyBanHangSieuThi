@@ -7,4 +7,5 @@ import com.example.quanlysieuthi.service.impl.PagedLinkedList;
 public interface PhieuNhapService {
     public PagedLinkedList<PhieuNhap> getAllPhieuNhap(Integer pageNumber, Integer pageSize);
     public void createPhieuNhap(PhieuNhapRequest dto);
+    public PhieuNhap getPhieuNhap(String ma);
 }

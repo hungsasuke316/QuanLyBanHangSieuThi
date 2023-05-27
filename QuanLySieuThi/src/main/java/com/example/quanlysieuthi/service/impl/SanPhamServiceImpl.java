@@ -1,6 +1,10 @@
 package com.example.quanlysieuthi.service.impl;
 
+import com.example.quanlysieuthi.data.entity.HoaDon;
+import com.example.quanlysieuthi.data.entity.PhieuNhap;
 import com.example.quanlysieuthi.data.entity.SanPham;
+import com.example.quanlysieuthi.data.repository.HoaDonRepository;
+import com.example.quanlysieuthi.data.repository.PhieuNhapRepository;
 import com.example.quanlysieuthi.data.repository.SanPhamRepository;
 import com.example.quanlysieuthi.dto.request.SanPhamRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
@@ -18,10 +22,14 @@ import java.util.List;
 @Service
 public class SanPhamServiceImpl implements SanPhamService {
     private final SanPhamRepository sanPhamRepository;
+    private final PhieuNhapRepository phieuNhapRepository;
+    private final HoaDonRepository hoaDonRepository;
     private final ModelMapper modelMapper;
 
-    public SanPhamServiceImpl(SanPhamRepository sanPhamRepository, ModelMapper modelMapper) {
+    public SanPhamServiceImpl(SanPhamRepository sanPhamRepository, PhieuNhapRepository phieuNhapRepository, HoaDonRepository hoaDonRepository, ModelMapper modelMapper) {
         this.sanPhamRepository = sanPhamRepository;
+        this.phieuNhapRepository = phieuNhapRepository;
+        this.hoaDonRepository = hoaDonRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -45,16 +53,18 @@ public class SanPhamServiceImpl implements SanPhamService {
         LinkedList<SanPham> linkedList = convertToLinkedList(sanPhamList);
         if (linkedList.isEmpty()){
             SanPham sanPham = modelMapper.map(dto, SanPham.class);
+            sanPham.setSoLuongTon(0);
             linkedList.addFirst(sanPham);
             sanPhamRepository.saveAll(linkedList);
         }
         else {
             for (SanPham sanPham : linkedList){
                 if (dto.getMa().equals(sanPham.getMa())){
-                    throw new ResourceNotAcceptException("San Pham already exist");
+                    throw new ResourceNotAcceptException("Mã sản phẩm đã tồn tại. Vui lòng nhập lại!!!");
                 }
             }
             SanPham sanPham = modelMapper.map(dto, SanPham.class);
+            sanPham.setSoLuongTon(0);
             linkedList.addFirst(sanPham);
             sanPhamRepository.saveAll(linkedList);
         }
@@ -69,14 +79,39 @@ public class SanPhamServiceImpl implements SanPhamService {
     }
 
     @Override
-    public LinkedList<SanPham> deleteSanPham(String ma) {
-        SanPham sanPham =sanPhamRepository.findById(ma).get();
+    public void deleteSanPham(String ma) {
+        SanPham sanPham = sanPhamRepository.findById(ma).orElse(null);
+        if (sanPham == null) {
+            throw new ResourceNotFoundException("Không tìm thấy sản phẩm có mã " + ma);
+        }
+
+        List<PhieuNhap> phieuNhapList = this.phieuNhapRepository.findAll();
+        boolean hasPhieuNhap = false;
+        for (PhieuNhap phieuNhap : phieuNhapList) {
+            if (ma.equals(phieuNhap.getSanPham().getMa())) {
+                hasPhieuNhap = true;
+                break;
+            }
+        }
+
+        List<HoaDon> hoaDonList = this.hoaDonRepository.findAll();
+        boolean hasHoaDon = false;
+        for (HoaDon hoaDon : hoaDonList) {
+            if (ma.equals(hoaDon.getSanPham().getMa())) {
+                hasHoaDon = true;
+                break;
+            }
+        }
+
+        if (hasPhieuNhap) {
+            throw new ResourceNotAcceptException("Sản phẩm có trong phiếu nhập. Không thể xóa!!!");
+        }
+
+        if (hasHoaDon) {
+            throw new ResourceNotAcceptException("Sản phẩm có trong hóa đơn. Không thể xóa!!!");
+        }
+
         sanPhamRepository.delete(sanPham);
-
-        List<SanPham> sanPhamList = this.sanPhamRepository.findAll();
-        LinkedList<SanPham> linkedList = convertToLinkedList(sanPhamList);
-
-        return linkedList;
     }
 
     @Override

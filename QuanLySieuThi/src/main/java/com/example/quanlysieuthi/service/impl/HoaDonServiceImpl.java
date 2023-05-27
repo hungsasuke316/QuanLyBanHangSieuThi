@@ -61,11 +61,11 @@ public class HoaDonServiceImpl implements HoaDonService {
         HoaDon hoaDon = modelMapper.map(dto, HoaDon.class);
 
         NhanVien nhanVien = this.nhanVienRepository.findById(dto.getNhanVien())
-                .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay nhan vien" ));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhân viên" ));
         KhachHang khachHang = this.khachHangRepository.findById(dto.getKhachHang())
-                .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay khach hang" ));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng" ));
         SanPham sanPham = this.sanPhamRepository.findById(dto.getSanPham())
-                .orElseThrow(() -> new ResourceNotFoundException("Khong tim thay san pham" ));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm" ));
 
         hoaDon.setNhanVien(nhanVien);
         hoaDon.setKhachHang(khachHang);
@@ -86,18 +86,40 @@ public class HoaDonServiceImpl implements HoaDonService {
         if (linkedList.isEmpty()){
             linkedList.addFirst(hoaDon);
             hoaDonRepository.saveAll(linkedList);
+            sanPham.setSoLuongTon(sanPham.getSoLuongTon() - hoaDon.getSoLuong());
+            sanPhamRepository.save(sanPham);
         }
         else {
             for (HoaDon item : linkedList){
                 if (dto.getMa().equals(item.getMa())){
-                    throw new ResourceNotAcceptException("Ma hoa don da ton tai!");
+                    throw new ResourceNotAcceptException("Mã hóa đơn đã tồn tại!");
                 }
             }
 
             linkedList.addFirst(hoaDon);
             hoaDonRepository.saveAll(linkedList);
+            sanPham.setSoLuongTon(sanPham.getSoLuongTon() - hoaDon.getSoLuong());
+            sanPhamRepository.save(sanPham);
         }
 
+    }
+
+    @Override
+    public HoaDon getHoaDon(String ma) {
+        List<HoaDon> hoaDonList = this.hoaDonRepository.findAll();
+        LinkedList<HoaDon> linkedList = convertToLinkedList(hoaDonList);
+        HoaDon hoaDon = new HoaDon();
+        if (linkedList.isEmpty()){
+            throw new ResourceNotFoundException("Danh sach trong!!!");
+        }
+        else {
+            for (HoaDon item : linkedList){
+                if (ma.equals(item.getMa())){
+                    hoaDon = item;
+                }
+            }
+            return  hoaDon;
+        }
     }
 
     public LinkedList<HoaDon> convertToLinkedList(List<HoaDon> hoaDonList){

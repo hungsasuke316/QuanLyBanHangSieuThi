@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.LinkedList;
 
 @Controller
 public class SanPhamController {
@@ -50,11 +49,12 @@ public class SanPhamController {
             model.addAttribute("pagedSanPham", pagedSanPham);
             model.addAttribute("page", page);
             model.addAttribute("size", size);
+            redirectAttributes.addFlashAttribute("successMessage", "Tạo sản phẩm thành công");
 
-            return "sanpham_list";
+            return "redirect:/sanpham";
         }
         catch (ResourceNotAcceptException e){
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/sanpham/form";
         }
@@ -69,7 +69,7 @@ public class SanPhamController {
             return "sanpham_update";
         }
         catch (ResourceNotAcceptException e){
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/sanpham/form";
         }
@@ -79,27 +79,37 @@ public class SanPhamController {
     public String updateSanPham(@ModelAttribute("sanPham") SanPhamRequest sanPham,
                                 @RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "10") int size,
-                                Model model){
+                                Model model, RedirectAttributes redirectAttributes){
         sanPhamService.updateSanPham(sanPham);
         PagedLinkedList<SanPham> pagedSanPham = sanPhamService.getAllSanPham(page, size);
         model.addAttribute("pagedSanPham", pagedSanPham);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
+        redirectAttributes.addFlashAttribute("successMessage", "Sửa sản phẩm thành công");
 
-        return "sanpham_list";
+        return "redirect:/sanpham";
     }
 
     @GetMapping("/sanpham/delete/{ma}")
     public String deleteSanPham(@PathVariable("ma") String ma,
                                 @RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "10") int size,
-                                Model model){
-        LinkedList<SanPham> linkedList = sanPhamService.deleteSanPham(ma);
-        PagedLinkedList<SanPham> pagedSanPham = sanPhamService.getAllSanPham(page, size);
-        model.addAttribute("pagedSanPham", pagedSanPham);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
+                                Model model, RedirectAttributes redirectAttributes){
+        try{
+            sanPhamService.deleteSanPham(ma);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa sản phẩm thành công!");
+            PagedLinkedList<SanPham> pagedSanPham = sanPhamService.getAllSanPham(page, size);
+            model.addAttribute("pagedSanPham", pagedSanPham);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
 
-        return "/sanpham_list";
+
+            return "redirect:/sanpham";
+        }
+        catch (ResourceNotAcceptException e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+            return "redirect:/sanpham/?page=" + page + "&size=" + size;
+        }
     }
 }

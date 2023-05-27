@@ -2,78 +2,150 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Phieu Nhap</title>
+    <title>Phiếu Nhập</title>
     <link rel="stylesheet" type="text/css"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-<div class="container">
-    <div><h1>Danh Sach Phieu Nhap</h1></div>
-    <div th:if="${message}" class="alert alert-success text-center">
-        [[${message}]]
-    </div>
-    <div>
-        <a class="btn btn-primary" th:href="@{/phieunhap/form}">Thêm</a>
-        <label for="tuNgay">Từ ngày:</label>
-        <input type="date" id="tuNgay" name="tuNgay"/>
+    <script>
+        $(document).ready(function () {
+            $('a.btn-info').click(function (e) {
+                e.preventDefault(); // Ngăn chặn chuyển hướng đến trang khác
+                var maPhieuNhap = $(this).closest('table').find('td:first').text(); // Lấy mã phiếu nhập từ hàng được chọn
+                showChiTietPhieuNhap(maPhieuNhap);
+            });
 
-        <label for="denNgay">Đến ngày:</label>
-        <input type="date" id="denNgay" name="denNgay"/>
+            function showChiTietPhieuNhap(maPhieuNhap) {
+                // Gửi yêu cầu AJAX để lấy thông tin chi tiết của phiếu nhập từ mã phiếu nhập
+                $.ajax({
+                    url: '/phieunhap/chitiet/' + maPhieuNhap,
+                    type: 'GET',
+                    success: function (response) {
+                        // Hiển thị thông tin chi tiết trong cửa sổ modal
+                        var chiTietPhieuNhap = response; // Đây là đối tượng chứa thông tin chi tiết phiếu nhập
+                        var html = '<h3>Thông tin chi tiết phiếu nhập</h3>';
+                        html += '<p>Mã phiếu nhập: ' + chiTietPhieuNhap.ma + '</p>';
 
-        <button class="btn btn-primary" type="submit" th:href="@{/phieunhap}">Tìm kiếm</button>
-    </div>
+                        var ngayLap = chiTietPhieuNhap.ngayLapPhieuNhap;
+                        var ngayLapFormatted = ngayLap.substring(0, 10);
+                        html += '<p>Ngày lập: ' + ngayLapFormatted + '</p>';
 
-    <div>
-        <table class="table table-bordered">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">Phiếu Nhập</th>
-                <th scope="col">Ngày Lập</th>
-                <th scope="col">Nhân Viên</th>
-                <th scope="col">Nhà Cung Cấp</th>
-                <th scope="col">Sản Phẩm</th>
-                <th scope="col">Số Lượng</th>
-                <th scope="col">Tổng tiền</th>
-                <th scope="col">Chức năng</th>
-            </tr>
-            </thead>
-            <tbody>
-            <th:block th:each="phieuNhap : ${pagedPhieuNhap.data}">
+                        html += '<p>Nhân viên: ' + chiTietPhieuNhap.nhanVien.ma + ' - ' + chiTietPhieuNhap.nhanVien.ten + '</p>';
+                        html += '<p>Nhà cung cấp: ' + chiTietPhieuNhap.nhaCungCap.ma + ' - ' + chiTietPhieuNhap.nhaCungCap.ten + '</p>';
+                        html += '<p>Sản phẩm: ' + chiTietPhieuNhap.sanPham.ma + ' - ' + chiTietPhieuNhap.sanPham.ten + '</p>';
+                        html += '<p>Số lượng: ' + chiTietPhieuNhap.soLuong + '</p>';
+                        html += '<p>Đơn giá: ' + chiTietPhieuNhap.sanPham.donGia + '</p>';
+                        html += '<p>Tổng tiền: ' + chiTietPhieuNhap.tongTien + '</p>';
+
+                        // Hiển thị thông tin chi tiết trong div thongTinChiTietPhieuNhap trong cửa sổ modal
+                        $('#thongTinChiTietPhieuNhap').html(html);
+
+                        // Hiển thị cửa sổ modal
+                        $('#modalChiTietPhieuNhap').modal('show');
+                    },
+                    error: function () {
+                        alert('Không tìm thấy chi tiết phiếu nhập.');
+                    }
+                });
+            }
+
+        });
+    </script>
+    <div class="container">
+        <div><h1>Danh Sách Phiếu Nhập</h1></div>
+        <div th:if="${successMessage}" class="alert alert-success text-center">
+            [[${successMessage}]]
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger text-center">
+            [[${errorMessage}]]
+        </div>
+        <div>
+            <a class="btn btn-primary" th:href="@{/phieunhap/form}">Thêm</a>
+            <label for="tuNgay">Từ ngày:</label>
+            <input type="date" id="tuNgay" name="tuNgay"/>
+
+            <label for="denNgay">Đến ngày:</label>
+            <input type="date" id="denNgay" name="denNgay"/>
+
+            <button class="btn btn-primary" type="submit" th:href="@{/phieunhap}">Tìm kiếm</button>
+        </div>
+
+        <div>
+            <table id="phieuNhapTable" class="table table-bordered">
+                <thead class="thead-dark">
                 <tr>
-                    <td th:text="${phieuNhap.ma}"></td>
-                    <td th:text="${dateFormat.format(phieuNhap.ngayLapPhieuNhap)}"></td>
-                    <td th:text="${phieuNhap.nhanVien.ma}"></td>
-                    <td th:text="${phieuNhap.nhaCungCap.ma}"></td>
-                    <td th:text="${phieuNhap.sanPham.ma}"></td>
-                    <td th:text="${phieuNhap.soLuong}"></td>
-                    <td th:text="${phieuNhap.tongTien}"></td>
-                    <td>
-                        <a class="btn btn-info" th:href="@{'/phieunhap/chitiet/' + ${phieuNhap.ma}}">Xem chi tiết</a>
-                    </td>
+                    <th scope="col">Phiếu Nhập</th>
+                    <th scope="col">Ngày Lập</th>
+                    <th scope="col">Nhân Viên</th>
+                    <th scope="col">Nhà Cung Cấp</th>
+                    <th scope="col">Sản Phẩm</th>
+                    <th scope="col">Số Lượng</th>
+                    <th scope="col">Tổng tiền</th>
+                    <th scope="col">Chức năng</th>
                 </tr>
-            </th:block>
-            </tbody>
-        </table>
-    </div>
-    <div class="pagination">
-        <ul class="pagination justify-content-center">
-            <li th:if="${pagedPhieuNhap.hasPreviousPage}"
-                th:classappend="${pagedPhieuNhap.hasPreviousPage ? 'page-item' : 'page-item disabled'}">
-                <a class="page-link" th:href="@{|/phieunhap?page=${pagedPhieuNhap.currentPage - 1}&amp;size=${size}|}">&lt;</a>
-            </li>
-            <li th:each="i : ${#numbers.sequence(0, pagedPhieuNhap.totalPages - 1)}"
-                th:classappend="${pagedPhieuNhap.currentPage == i ? 'page-item active' : 'page-item'}">
-                <a class="page-link" th:href="@{|/phieunhap?page=${i}&amp;size=${size}|}" th:text="${i + 1}"></a>
-            </li>
-            <li th:if="${pagedPhieuNhap.hasNextPage}"
-                th:classappend="${pagedPhieuNhap.hasNextPage ? 'page-item' : 'page-item disabled'}">
-                <a class="page-link" th:href="@{|/phieunhap?page=${pagedPhieuNhap.currentPage + 1}&amp;size=${size}|}">&gt;</a>
-            </li>
-        </ul>
-    </div>
+                </thead>
+                <tbody>
+                <th:block th:each="phieuNhap : ${pagedPhieuNhap.data}">
+                    <tr>
+                        <td th:text="${phieuNhap.ma}"></td>
+                        <td th:text="${dateFormat.format(phieuNhap.ngayLapPhieuNhap)}"></td>
+                        <td th:text="${phieuNhap.nhanVien.ma}"></td>
+                        <td th:text="${phieuNhap.nhaCungCap.ma}"></td>
+                        <td th:text="${phieuNhap.sanPham.ma}"></td>
+                        <td th:text="${phieuNhap.soLuong}"></td>
+                        <td th:text="${phieuNhap.tongTien}"></td>
+                        <td>
+                            <a class="btn btn-info" th:href="@{'/phieunhap/chitiet/' + ${phieuNhap.ma}}"
+                               data-toggle="modal" data-target="#modalChiTietPhieuNhap">Xem chi tiết</a>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div id="chiTietPhieuNhap"></div> <!-- Địa điểm để hiển thị thông tin chi tiết -->
 
-</div>
+        <!-- Giao diện chi tiết phiếu nhập -->
+        <div id="modalChiTietPhieuNhap" class="modal fade" tabindex="-1" role="dialog"
+             aria-labelledby="modalChiTietPhieuNhapLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalChiTietPhieuNhapLabel">Chi tiết phiếu nhập</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="thongTinChiTietPhieuNhap"></div>
+                        <!-- Địa điểm để hiển thị thông tin chi tiết phiếu nhập -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <ul class="pagination justify-content-center">
+                <li th:if="${pagedPhieuNhap.hasPreviousPage}"
+                    th:classappend="${pagedPhieuNhap.hasPreviousPage ? 'page-item' : 'page-item disabled'}">
+                    <a class="page-link" th:href="@{|/phieunhap?page=${pagedPhieuNhap.currentPage - 1}&amp;size=${size}|}">&lt;</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, pagedPhieuNhap.totalPages - 1)}"
+                    th:classappend="${pagedPhieuNhap.currentPage == i ? 'page-item active' : 'page-item'}">
+                    <a class="page-link" th:href="@{|/phieunhap?page=${i}&amp;size=${size}|}" th:text="${i + 1}"></a>
+                </li>
+                <li th:if="${pagedPhieuNhap.hasNextPage}"
+                    th:classappend="${pagedPhieuNhap.hasNextPage ? 'page-item' : 'page-item disabled'}">
+                    <a class="page-link" th:href="@{|/phieunhap?page=${pagedPhieuNhap.currentPage + 1}&amp;size=${size}|}">&gt;</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
 </body>
 </html>

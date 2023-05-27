@@ -10,8 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.LinkedList;
-
 @Controller
 public class KhachHangController {
     KhachHangService khachHangService;
@@ -50,11 +48,12 @@ public class KhachHangController {
             model.addAttribute("pagedKhachHang", pagedKhachHang);
             model.addAttribute("page", page);
             model.addAttribute("size", size);
+            redirectAttributes.addFlashAttribute("successMessage", "Tạo khách hàng thành công");
 
-            return "khachhang_list";
+            return "redirect:/khachhang";
         }
         catch (ResourceNotAcceptException e){
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/khachhang/form";
         }
@@ -69,7 +68,7 @@ public class KhachHangController {
             return "khachhang_update";
         }
         catch (ResourceNotAcceptException e){
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 
             return "redirect:/khachhang/form";
         }
@@ -79,27 +78,36 @@ public class KhachHangController {
     public String updateKhachHang(@ModelAttribute("khachHang") KhachHangRequest khachHang,
                                   @RequestParam(defaultValue = "0") Integer page,
                                   @RequestParam(defaultValue = "10") Integer size,
-                                  Model model){
+                                  Model model, RedirectAttributes redirectAttributes){
         khachHangService.updateKhachHang(khachHang);
         PagedLinkedList<KhachHang> pagedKhachHang = khachHangService.getAllKhachHang(page, size);
         model.addAttribute("pagedKhachHang", pagedKhachHang);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
+        redirectAttributes.addFlashAttribute("successMessage", "Sửa khách hàng thành công");
 
-        return "khachhang_list";
+        return "redirect:/khachhang";
     }
 
     @GetMapping("/khachhang/delete/{ma}")
     public String deleteKhachHang(@PathVariable("ma") String ma,
                                   @RequestParam(defaultValue = "0") Integer page,
                                   @RequestParam(defaultValue = "10") Integer size,
-                                  Model model){
-        LinkedList<KhachHang> linkedList = khachHangService.deleteKhachHang(ma);
-        PagedLinkedList<KhachHang> pagedKhachHang = khachHangService.getAllKhachHang(page, size);
-        model.addAttribute("pagedKhachHang", pagedKhachHang);
-        model.addAttribute("page", page);
-        model.addAttribute("size", size);
+                                  Model model, RedirectAttributes redirectAttributes){
+        try{
+            khachHangService.deleteKhachHang(ma);
+            PagedLinkedList<KhachHang> pagedKhachHang = khachHangService.getAllKhachHang(page, size);
+            model.addAttribute("pagedKhachHang", pagedKhachHang);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+            redirectAttributes.addFlashAttribute("successMessage", "Xóa khách hàng thành công");
 
-        return "/khachhang_list";
+            return "redirect:/khachhang";
+        }
+        catch (ResourceNotAcceptException e){
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+            return "redirect:/khachhang/?page=" + page + "&size=" + size;
+        }
     }
 }
