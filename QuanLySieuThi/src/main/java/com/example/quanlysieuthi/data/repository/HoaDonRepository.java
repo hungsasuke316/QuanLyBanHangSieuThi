@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 @Repository
 public interface HoaDonRepository extends JpaRepository<HoaDon, String> {
     @Query("SELECT COALESCE(SUM(h.tongTien), 0) FROM HoaDon h WHERE YEAR(h.ngayLapHoaDon) = :year AND MONTH(h.ngayLapHoaDon) = :month")
@@ -17,4 +19,7 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, String> {
     Page<HoaDon> findByNhanVien_Ma(String maNhanVien, Pageable pageable);
     Page<HoaDon> findBySanPham_Ma(String maSanPham, Pageable pageable);
     Page<HoaDon> findByKhachHang_Ma(String maNhaCungCap, Pageable pageable);
+
+
+
 }

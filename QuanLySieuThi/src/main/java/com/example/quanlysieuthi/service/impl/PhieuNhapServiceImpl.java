@@ -79,7 +79,7 @@ public class PhieuNhapServiceImpl implements PhieuNhapService {
             throw new RuntimeException(e);
         }
 
-        phieuNhap.setTongTien(sanPham.getDonGia() * dto.getSoLuong());
+        phieuNhap.setTongTien((long) (sanPham.getDonGia() * dto.getSoLuong() * 0.9));
 
         if (linkedList.isEmpty()){
             linkedList.addFirst(phieuNhap);
@@ -107,16 +107,22 @@ public class PhieuNhapServiceImpl implements PhieuNhapService {
         List<PhieuNhap> phieuNhapList = this.phieuNhapRepository.findAll();
         LinkedList<PhieuNhap> linkedList = convertToLinkedList(phieuNhapList);
         PhieuNhap phieuNhap = new PhieuNhap();
-        if (linkedList.isEmpty()){
+        boolean found = false;
+        if (linkedList.isEmpty()) {
             throw new ResourceNotFoundException("Danh sach trong!!!");
-        }
-        else {
-            for (PhieuNhap item : linkedList){
-                if (ma.equals(item.getMa())){
+        } else {
+            for (PhieuNhap item : linkedList) {
+                if (ma.equals(item.getMa())) {
                     phieuNhap = item;
+                    found = true;
+                    break; // Kết thúc vòng lặp khi tìm thấy
                 }
             }
-            return  phieuNhap;
+            if (found) {
+                return phieuNhap;
+            } else {
+                throw new ResourceNotFoundException("Không tìm thấy chi tiết phiếu nhập");
+            }
         }
     }
 
