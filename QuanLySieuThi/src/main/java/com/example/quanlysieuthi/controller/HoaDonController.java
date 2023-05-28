@@ -96,4 +96,27 @@ public class HoaDonController {
         }
         return ResponseEntity.ok().body(hoaDon);
     }
+
+    @GetMapping("/hoadon/timkiem")
+    public String searchHoaDon(@RequestParam(name = "maHD", required = false) String maHD,
+                               @RequestParam(name = "maNV", required = false) String maNV,
+                               @RequestParam(name = "maSP", required = false) String maSP,
+                               @RequestParam(name = "maKH", required = false) String maKH,
+                               @RequestParam(name = "page", defaultValue = "0") int page,
+                               @RequestParam(name = "size", defaultValue = "10") int size,
+                               Model model) {
+        PagedLinkedList<HoaDon> pagedHoaDon = hoaDonService.searchHoaDon(maHD, maNV, maSP, maKH, page, size);
+
+        if (!pagedHoaDon.getData().isEmpty()) {
+            model.addAttribute("pagedHoaDon", pagedHoaDon);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            model.addAttribute("dateFormat", dateFormat);
+        } else {
+            model.addAttribute("noResult", "Không có kết quả.");
+        }
+        return "hoadon_list";
+    }
 }

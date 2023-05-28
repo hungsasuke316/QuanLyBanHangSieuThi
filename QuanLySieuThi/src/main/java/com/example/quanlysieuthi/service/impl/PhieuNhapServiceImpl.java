@@ -120,6 +120,34 @@ public class PhieuNhapServiceImpl implements PhieuNhapService {
         }
     }
 
+    @Override
+    public PagedLinkedList<PhieuNhap> searchPhieuNhap(String maPN, String maNV, String maSP, String maNCC, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<PhieuNhap> pagedPhieuNhap;
+
+        if (maPN != null && !maPN.isEmpty()) {
+            pagedPhieuNhap = phieuNhapRepository.findByMa(maPN, pageable);
+        } else if (maNV != null && !maNV.isEmpty()) {
+            pagedPhieuNhap = phieuNhapRepository.findByNhanVien_Ma(maNV, pageable);
+        } else if (maSP != null && !maSP.isEmpty()) {
+            pagedPhieuNhap = phieuNhapRepository.findBySanPham_Ma(maSP, pageable);
+        } else if (maNCC != null && !maNCC.isEmpty()) {
+            pagedPhieuNhap = phieuNhapRepository.findByNhaCungCap_Ma(maNCC, pageable);
+        } else {
+            pagedPhieuNhap = phieuNhapRepository.findAll(pageable);
+        }
+
+        List<PhieuNhap> phieuNhapList = pagedPhieuNhap.getContent();
+        LinkedList<PhieuNhap> linkedList = new LinkedList<>(phieuNhapList);
+
+        int totalPages = pagedPhieuNhap.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
+    }
+
     public LinkedList<PhieuNhap> convertToLinkedList(List<PhieuNhap> phieuNhapList){
         LinkedList<PhieuNhap> linkedList = new LinkedList<>(phieuNhapList);
         return linkedList;

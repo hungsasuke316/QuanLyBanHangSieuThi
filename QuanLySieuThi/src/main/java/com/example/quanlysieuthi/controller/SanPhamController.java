@@ -112,4 +112,22 @@ public class SanPhamController {
             return "redirect:/sanpham/?page=" + page + "&size=" + size;
         }
     }
+
+    @GetMapping("/sanpham/timkiem")
+    public String searchSanPham(@RequestParam(name = "ma", required = false) String ma,
+                                 @RequestParam(name = "ten", required = false) String ten,
+                                 @RequestParam(name = "page", defaultValue = "0") int page,
+                                 @RequestParam(name = "size", defaultValue = "10") int size,
+                                 Model model) {
+        PagedLinkedList<SanPham> pagedSanPham = sanPhamService.searchSanPham(ma, ten, page, size);
+
+        if (!pagedSanPham.getData().isEmpty()) {
+            model.addAttribute("pagedSanPham", pagedSanPham);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+        } else {
+            model.addAttribute("noResult", "Không có kết quả.");
+        }
+        return "sanpham_list";
+    }
 }

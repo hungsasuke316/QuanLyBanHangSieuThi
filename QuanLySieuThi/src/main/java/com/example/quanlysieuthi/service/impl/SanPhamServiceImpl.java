@@ -1,6 +1,7 @@
 package com.example.quanlysieuthi.service.impl;
 
 import com.example.quanlysieuthi.data.entity.HoaDon;
+import com.example.quanlysieuthi.data.entity.KhachHang;
 import com.example.quanlysieuthi.data.entity.PhieuNhap;
 import com.example.quanlysieuthi.data.entity.SanPham;
 import com.example.quanlysieuthi.data.repository.HoaDonRepository;
@@ -130,6 +131,32 @@ public class SanPhamServiceImpl implements SanPhamService {
             }
             return  sanPham;
         }
+    }
+
+    @Override
+    public PagedLinkedList<SanPham> searchSanPham(String ma, String ten, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<SanPham> sanPhamPage;
+
+        if (ma != null && !ma.isEmpty() && ten != null && !ten.isEmpty()) {
+            sanPhamPage = sanPhamRepository.findByMaAndTen(ma, ten, pageable);
+        } else if (ma != null && !ma.isEmpty()) {
+            sanPhamPage = sanPhamRepository.findByMa(ma, pageable);
+        } else if (ten != null && !ten.isEmpty()) {
+            sanPhamPage = sanPhamRepository.findByTen(ten, pageable);
+        } else {
+            sanPhamPage = sanPhamRepository.findAll(pageable);
+        }
+
+        List<SanPham> sanPhamList = sanPhamPage.getContent();
+        LinkedList<SanPham> linkedList = convertToLinkedList(sanPhamList);
+
+        int totalPages = sanPhamPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
     }
 
     public LinkedList<SanPham> convertToLinkedList(List<SanPham> sanPhamList){

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 @Controller
 public class NhaCungCapController {
     NhaCungCapService nhaCungCapService;
@@ -114,5 +115,23 @@ public class NhaCungCapController {
 
             return "redirect:/nhacungcap/?page=" + page + "&size=" + size;
         }
+    }
+
+    @GetMapping("/nhacungcap/timkiem")
+    public String searchNhaCungCap(@RequestParam(name = "ma", required = false) String ma,
+                                   @RequestParam(name = "ten", required = false) String ten,
+                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                   @RequestParam(name = "size", defaultValue = "10") int size,
+                                   Model model) {
+        PagedLinkedList<NhaCungCap> pagedNhaCungCap = nhaCungCapService.searchNhaCungCap(ma, ten, page, size);
+
+        if (!pagedNhaCungCap.getData().isEmpty()) {
+            model.addAttribute("pagedNhaCungCap", pagedNhaCungCap);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+        } else {
+            model.addAttribute("noResult", "Không có kết quả.");
+        }
+        return "nhacungcap_list";
     }
 }

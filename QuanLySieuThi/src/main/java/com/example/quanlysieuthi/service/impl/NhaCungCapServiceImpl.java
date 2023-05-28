@@ -112,6 +112,32 @@ public class NhaCungCapServiceImpl implements NhaCungCapService {
         nhaCungCapRepository.delete(nhaCungCap);
     }
 
+    @Override
+    public PagedLinkedList<NhaCungCap> searchNhaCungCap(String ma, String ten, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<NhaCungCap> nhaCungCapPage;
+
+        if (ma != null && !ma.isEmpty() && ten != null && !ten.isEmpty()) {
+            nhaCungCapPage = nhaCungCapRepository.findByMaAndTen(ma, ten, pageable);
+        } else if (ma != null && !ma.isEmpty()) {
+            nhaCungCapPage = nhaCungCapRepository.findByMa(ma, pageable);
+        } else if (ten != null && !ten.isEmpty()) {
+            nhaCungCapPage = nhaCungCapRepository.findByTen(ten, pageable);
+        } else {
+            nhaCungCapPage = nhaCungCapRepository.findAll(pageable);
+        }
+
+        List<NhaCungCap> nhaCungCapList = nhaCungCapPage.getContent();
+        LinkedList<NhaCungCap> linkedList = convertToLinkedList(nhaCungCapList);
+
+        int totalPages = nhaCungCapPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
+    }
+
     public LinkedList<NhaCungCap> convertToLinkedList(List<NhaCungCap> nhaCungCapList){
         LinkedList<NhaCungCap> linkedList = new LinkedList<>(nhaCungCapList);
         return linkedList;

@@ -2,6 +2,7 @@ package com.example.quanlysieuthi.service.impl;
 
 import com.example.quanlysieuthi.data.entity.HoaDon;
 import com.example.quanlysieuthi.data.entity.KhachHang;
+import com.example.quanlysieuthi.data.entity.NhanVien;
 import com.example.quanlysieuthi.data.repository.HoaDonRepository;
 import com.example.quanlysieuthi.data.repository.KhachHangRepository;
 import com.example.quanlysieuthi.dto.request.KhachHangRequest;
@@ -113,6 +114,32 @@ public class KhachHangServiceImpl implements KhachHangService {
             }
             return  khachHang;
         }
+    }
+
+    @Override
+    public PagedLinkedList<KhachHang> searchKhachHang(String ma, String ten, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<KhachHang> khachHangPage;
+
+        if (ma != null && !ma.isEmpty() && ten != null && !ten.isEmpty()) {
+            khachHangPage = khachHangRepository.findByMaAndTen(ma, ten, pageable);
+        } else if (ma != null && !ma.isEmpty()) {
+            khachHangPage = khachHangRepository.findByMa(ma, pageable);
+        } else if (ten != null && !ten.isEmpty()) {
+            khachHangPage = khachHangRepository.findByTen(ten, pageable);
+        } else {
+            khachHangPage = khachHangRepository.findAll(pageable);
+        }
+
+        List<KhachHang> khachHangList = khachHangPage.getContent();
+        LinkedList<KhachHang> linkedList = convertToLinkedList(khachHangList);
+
+        int totalPages = khachHangPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
     }
 
     public LinkedList<KhachHang> convertToLinkedList(List<KhachHang> khachHangList){

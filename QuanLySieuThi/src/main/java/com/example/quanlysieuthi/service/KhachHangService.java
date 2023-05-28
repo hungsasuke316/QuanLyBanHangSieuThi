@@ -12,4 +12,5 @@ public interface KhachHangService {
     public void deleteKhachHang(String ma);
 
     public KhachHang getKhachHang(String ma);
+    public PagedLinkedList<KhachHang> searchKhachHang(String ma, String ten, Integer pageNumber, Integer pageSize);
 }

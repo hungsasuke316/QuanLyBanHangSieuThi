@@ -135,6 +135,32 @@ public class NhanVienServiceImpl implements NhanVienService {
         }
     }
 
+    @Override
+    public PagedLinkedList<NhanVien> searchNhanVien(String ma, String ten, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<NhanVien> nhanVienPage;
+
+        if (ma != null && !ma.isEmpty() && ten != null && !ten.isEmpty()) {
+            nhanVienPage = nhanVienRepository.findByMaAndTen(ma, ten, pageable);
+        } else if (ma != null && !ma.isEmpty()) {
+            nhanVienPage = nhanVienRepository.findByMa(ma, pageable);
+        } else if (ten != null && !ten.isEmpty()) {
+            nhanVienPage = nhanVienRepository.findByTen(ten, pageable);
+        } else {
+            nhanVienPage = nhanVienRepository.findAll(pageable);
+        }
+
+        List<NhanVien> nhanVienList = nhanVienPage.getContent();
+        LinkedList<NhanVien> linkedList = convertToLinkedList(nhanVienList);
+
+        int totalPages = nhanVienPage.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
+    }
+
     public LinkedList<NhanVien> convertToLinkedList(List<NhanVien> nhanVienList){
         LinkedList<NhanVien> linkedList = new LinkedList<>(nhanVienList);
         return linkedList;
