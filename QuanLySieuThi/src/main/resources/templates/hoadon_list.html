@@ -15,7 +15,7 @@
         $(document).ready(function () {
             $('a.btn-info').click(function (e) {
                 e.preventDefault(); // Ngăn chặn chuyển hướng đến trang khác
-                var maHoaDon = $(this).closest('table').find('td:first').text(); // Lấy mã phiếu nhập từ hàng được chọn
+                var maHoaDon = $(this).closest('tr').find('td:eq(0)').text();
                 showChiTietHoaDon(maHoaDon);
             });
 

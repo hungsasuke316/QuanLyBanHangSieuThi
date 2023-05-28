@@ -7,19 +7,21 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
           crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="container">
-    <div><h1>Báo Cáo Doanh Thua</h1></div>
+    <div><h1>Báo Cáo Doanh Thu</h1></div>
     <div th:if="${message}" class="alert alert-success text-center">
         [[${message}]]
     </div>
-    <form action="#" th:action="@{/baocao}" method="post">
+    <form id="reportForm" method="post">
         <label for="year">Năm:</label>
         <input type="number" id="year" name="year" required>
         <label for="month">Tháng:</label>
         <input type="number" id="month" name="month" required>
-        <button class="btn btn-primary" type="submit">Xem báo cáo</button>
+        <button class="btn btn-primary" name="action" value="baocao" type="submit">Xem báo cáo</button>
     </form>
 
     <div th:if="${report != null}">
@@ -28,6 +30,45 @@
         <p>Tổng tiền phiếu nhập: <span th:text="${report.tongTienPhieuNhap}"></span></p>
         <p>Doanh Thu: <span th:text="${report.tongTienHoaDon - report.tongTienPhieuNhap}"></span></p>
     </div>
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+    <script>
+        // Lấy dữ liệu từ model và tạo biểu đồ
+        var hoaDonTien = [[${report.tongTienHoaDon}]];
+        var phieuNhapTien = [[${report.tongTienPhieuNhap}]];
+        var doanhThu = [[${report.tongTienHoaDon - report.tongTienPhieuNhap}]];
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Tổng tiền hóa đơn', 'Tổng tiền phiếu nhập', 'Doanh thu'],
+                datasets: [{
+                    label: 'Biểu đồ doanh thu',
+                    data: [hoaDonTien, phieuNhapTien, doanhThu],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </div>
 </body>
 </html>

@@ -16,7 +16,7 @@
         $(document).ready(function () {
             $('a.btn-info').click(function (e) {
                 e.preventDefault(); // Ngăn chặn chuyển hướng đến trang khác
-                var maPhieuNhap = $(this).closest('table').find('td:first').text(); // Lấy mã phiếu nhập từ hàng được chọn
+                var maPhieuNhap = $(this).closest('tr').find('td:eq(0)').text();
                 showChiTietPhieuNhap(maPhieuNhap);
             });
 
@@ -101,7 +101,7 @@
                         <th scope="col">Nhà Cung Cấp</th>
                         <th scope="col">Sản Phẩm</th>
                         <th scope="col">Số Lượng</th>
-                        <th scope="col">Tổng tiền</th>
+                        <th scope="col">Tổng tiền (Giảm 10%)</th>
                         <th scope="col">Chức năng</th>
                     </tr>
                     </thead>

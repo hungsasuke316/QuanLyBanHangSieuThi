@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+
 @Repository
 public interface PhieuNhapRepository extends JpaRepository<PhieuNhap, String> {
     @Query("SELECT COALESCE(SUM(h.tongTien), 0) FROM PhieuNhap h WHERE YEAR(h.ngayLapPhieuNhap) = :year AND MONTH(h.ngayLapPhieuNhap) = :month")
@@ -17,4 +19,5 @@ public interface PhieuNhapRepository extends JpaRepository<PhieuNhap, String> {
     Page<PhieuNhap> findByNhanVien_Ma(String maNhanVien, Pageable pageable);
     Page<PhieuNhap> findBySanPham_Ma(String maSanPham, Pageable pageable);
     Page<PhieuNhap> findByNhaCungCap_Ma(String maNhaCungCap, Pageable pageable);
+
 }

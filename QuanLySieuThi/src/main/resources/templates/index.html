@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang chủ</title>
+  <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+
+  <style>
+    body {
+      background-image: url('https://i.pinimg.com/736x/79/72/5e/79725e71c8ed633a2fc0e2d4d33debe6.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+      color: black;
+    }
+
+    .btn {
+      background-color: rgba(139, 69, 19, 0.5);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-block:hover {
+      background-color: #ff9900;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container text-center my-5">
+    <h1>Quản Lý Bán Hàng Siêu Thị</h1>
+    <h2>Nhóm 4</h2>
+    <h3>Hồ Ngọc Khắc Hưng - N18DCCN087</h3>
+    <h3>Phạm Minh Quốc - N18DCCN165</h3>
+    <h3>Nguyễn Huy Hoàng - N20DCDT008</h3>
+    <h3>Nguyễn Quốc Doanh - N18DCDT007</h3>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <a class="btn btn-primary btn-block mb-4" th:href="@{/nhanvien}">Quản Lý Nhân Viên</a>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary btn-block mb-4" th:href="@{/khachhang}">Quản Lý Khách Hàng</a>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary btn-block mb-4" th:href="@{/sanpham}">Quản Lý Sản Phẩm</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <a class="btn btn-primary btn-block mb-4" th:href="@{/nhacungcap}">Quản Lý Nhà Cung Cấp</a>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary btn-block mb-4" th:href="@{/hoadon}">Quản Lý Hóa Đơn</a>
+      </div>
+      <div class="col-md-4">
+        <a class="btn btn-primary btn-block mb-4" th:href="@{/phieunhap}">Quản Lý Phiếu Nhập</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 offset-md-4">
+        <a class="btn btn-primary btn-block mb-4" th:href="@{/baocao}">Báo Cáo</a>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+</html>
