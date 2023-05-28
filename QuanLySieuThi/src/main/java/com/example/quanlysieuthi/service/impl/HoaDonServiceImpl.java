@@ -122,6 +122,34 @@ public class HoaDonServiceImpl implements HoaDonService {
         }
     }
 
+    @Override
+    public PagedLinkedList<HoaDon> searchHoaDon(String maHD, String maNV, String maSP, String maKH, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<HoaDon> pagedHoaDon;
+
+        if (maHD != null && !maHD.isEmpty()) {
+            pagedHoaDon = hoaDonRepository.findByMa(maHD, pageable);
+        } else if (maNV != null && !maNV.isEmpty()) {
+            pagedHoaDon = hoaDonRepository.findByNhanVien_Ma(maNV, pageable);
+        } else if (maSP != null && !maSP.isEmpty()) {
+            pagedHoaDon = hoaDonRepository.findBySanPham_Ma(maSP, pageable);
+        } else if (maKH != null && !maKH.isEmpty()) {
+            pagedHoaDon = hoaDonRepository.findByKhachHang_Ma(maKH, pageable);
+        } else {
+            pagedHoaDon = hoaDonRepository.findAll(pageable);
+        }
+
+        List<HoaDon> hoaDonList = pagedHoaDon.getContent();
+        LinkedList<HoaDon> linkedList = new LinkedList<>(hoaDonList);
+
+        int totalPages = pagedHoaDon.getTotalPages();
+        int currentPage = pageNumber;
+        boolean hasPreviousPage = pageNumber > 0;
+        boolean hasNextPage = pageNumber < totalPages - 1;
+
+        return new PagedLinkedList<>(linkedList, currentPage, totalPages, hasPreviousPage, hasNextPage);
+    }
+
     public LinkedList<HoaDon> convertToLinkedList(List<HoaDon> hoaDonList){
         LinkedList<HoaDon> linkedList = new LinkedList<>(hoaDonList);
         return linkedList;

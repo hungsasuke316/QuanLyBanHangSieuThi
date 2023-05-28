@@ -1,6 +1,7 @@
 package com.example.quanlysieuthi.controller;
 
 import com.example.quanlysieuthi.data.entity.KhachHang;
+import com.example.quanlysieuthi.data.entity.NhanVien;
 import com.example.quanlysieuthi.dto.request.KhachHangRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.service.KhachHangService;
@@ -109,5 +110,23 @@ public class KhachHangController {
 
             return "redirect:/khachhang/?page=" + page + "&size=" + size;
         }
+    }
+
+    @GetMapping("/khachhang/timkiem")
+    public String searchKhachHang(@RequestParam(name = "ma", required = false) String ma,
+                                   @RequestParam(name = "ten", required = false) String ten,
+                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                   @RequestParam(name = "size", defaultValue = "10") int size,
+                                   Model model) {
+        PagedLinkedList<KhachHang> pagedKhachHang = khachHangService.searchKhachHang(ma, ten, page, size);
+
+        if (!pagedKhachHang.getData().isEmpty()) {
+            model.addAttribute("pagedKhachHang", pagedKhachHang);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+        } else {
+            model.addAttribute("noResult", "Không có kết quả.");
+        }
+        return "khachhang_list";
     }
 }

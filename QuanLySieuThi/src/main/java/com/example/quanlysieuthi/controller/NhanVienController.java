@@ -111,4 +111,22 @@ public class NhanVienController {
             return "redirect:/nhanvien/?page=" + page + "&size=" + size;
         }
     }
+
+    @GetMapping("/nhanvien/timkiem")
+    public String searchNhanVien(@RequestParam(name = "ma", required = false) String ma,
+                                   @RequestParam(name = "ten", required = false) String ten,
+                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                   @RequestParam(name = "size", defaultValue = "10") int size,
+                                   Model model) {
+        PagedLinkedList<NhanVien> pagedNhanVien = nhanVienService.searchNhanVien(ma, ten, page, size);
+
+        if (!pagedNhanVien.getData().isEmpty()) {
+            model.addAttribute("pagedNhanVien", pagedNhanVien);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+        } else {
+            model.addAttribute("noResult", "Không có kết quả.");
+        }
+        return "nhanvien_list";
+    }
 }

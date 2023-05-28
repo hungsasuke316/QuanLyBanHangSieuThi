@@ -97,4 +97,27 @@ public class PhieuNhapController {
         }
         return ResponseEntity.ok().body(phieuNhap);
     }
+
+    @GetMapping("/phieunhap/timkiem")
+    public String searchPhieuNhap(@RequestParam(name = "maPN", required = false) String maPN,
+                                 @RequestParam(name = "maNV", required = false) String maNV,
+                                 @RequestParam(name = "maSP", required = false) String maSP,
+                                 @RequestParam(name = "maNCC", required = false) String maNCC,
+                                 @RequestParam(name = "page", defaultValue = "0") int page,
+                                 @RequestParam(name = "size", defaultValue = "10") int size,
+                                 Model model) {
+        PagedLinkedList<PhieuNhap> pagedPhieuNhap = phieuNhapService.searchPhieuNhap(maPN, maNV, maSP, maNCC, page, size);
+
+        if (!pagedPhieuNhap.getData().isEmpty()) {
+            model.addAttribute("pagedPhieuNhap", pagedPhieuNhap);
+            model.addAttribute("page", page);
+            model.addAttribute("size", size);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            model.addAttribute("dateFormat", dateFormat);
+        } else {
+            model.addAttribute("noResult", "Không có kết quả.");
+        }
+        return "phieunhap_list";
+    }
 }

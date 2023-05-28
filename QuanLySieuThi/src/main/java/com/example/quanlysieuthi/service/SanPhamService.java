@@ -11,4 +11,5 @@ public interface SanPhamService {
     public void updateSanPham(SanPhamRequest dto);
     public void deleteSanPham(String ma);
     public SanPham getSanPham(String ma);
+    public PagedLinkedList<SanPham> searchSanPham(String ma, String ten, Integer pageNumber, Integer pageSize);
 }
