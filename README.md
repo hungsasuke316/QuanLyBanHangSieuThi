@@ -9,10 +9,10 @@ Hóa Đơn: Lập hóa đơn (Nhân viên lập hóa đơn cho khách hà
 Báo cáo, thống kê  
 
 # Các chức năng đã làm:
-Nhà Cung Cấp: Xem DS, Thêm, Xóa, Sửa, Tìm kiếm  |
-Nhân Viên   : Xem DS, Thêm, Xóa, Sửa, Tìm kiếm  |
-Khách Hàng  : Xem DS, Thêm, Xóa, Sửa, Tìm kiếm  | ==> Phân Trang
-Sản Phẩm    : Xem DS, Thêm, Xóa, Sửa, Tìm kiếm  |
-Hóa Đơn     : Xem DS, Chi tiết, Thêm, Tìm kiếm  |
-Phiếu Nhập  : Xem DS, Chi tiết, Thêm, Tìm kiếm  |
-Báo cáo	    : Xem báo cáo theo tháng của năm
+Nhà Cung Cấp: Xem DS, Thêm, Xóa, Sửa, Tìm kiếm  |  
+Nhân Viên   : Xem DS, Thêm, Xóa, Sửa, Tìm kiếm  |  
+Khách Hàng  : Xem DS, Thêm, Xóa, Sửa, Tìm kiếm  | ==> Phân Trang  
+Sản Phẩm    : Xem DS, Thêm, Xóa, Sửa, Tìm kiếm  |  
+Hóa Đơn     : Xem DS, Chi tiết, Thêm, Tìm kiếm  |  
+Phiếu Nhập  : Xem DS, Chi tiết, Thêm, Tìm kiếm  |  
+Báo cáo	    : Xem báo cáo theo tháng của năm  
