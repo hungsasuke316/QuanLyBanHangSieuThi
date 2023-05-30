@@ -59,16 +59,22 @@ public class HoaDonServiceImpl implements HoaDonService {
         List<HoaDon> hoaDonList = this.hoaDonRepository.findAll();
         LinkedList<HoaDon> linkedList = convertToLinkedList(hoaDonList);
         HoaDon hoaDon = modelMapper.map(dto, HoaDon.class);
+        if (!dto.getKhachHang().isEmpty()){
+            KhachHang khachHang = this.khachHangRepository.findById(dto.getKhachHang())
+                    .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng" ));
+            hoaDon.setKhachHang(khachHang);
+        }
 
         NhanVien nhanVien = this.nhanVienRepository.findById(dto.getNhanVien())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhân viên" ));
-        KhachHang khachHang = this.khachHangRepository.findById(dto.getKhachHang())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng" ));
+
         SanPham sanPham = this.sanPhamRepository.findById(dto.getSanPham())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sản phẩm" ));
+        if (dto.getSoLuong() > sanPham.getSoLuongTon()){
+            throw new ResourceNotAcceptException("Số lượng tồn không đủ!!");
+        }
 
         hoaDon.setNhanVien(nhanVien);
-        hoaDon.setKhachHang(khachHang);
         hoaDon.setSanPham(sanPham);
 
         Date ngayGioLap = new Date();
@@ -86,7 +92,7 @@ public class HoaDonServiceImpl implements HoaDonService {
         if (linkedList.isEmpty()){
             linkedList.addFirst(hoaDon);
             hoaDonRepository.saveAll(linkedList);
-            sanPham.setSoLuongTon(sanPham.getSoLuongTon() - hoaDon.getSoLuong());
+            sanPham.setSoLuongTon((sanPham.getSoLuongTon() != null ? sanPham.getSoLuongTon() : 0) - hoaDon.getSoLuong());
             sanPhamRepository.save(sanPham);
         }
         else {
@@ -98,7 +104,7 @@ public class HoaDonServiceImpl implements HoaDonService {
 
             linkedList.addFirst(hoaDon);
             hoaDonRepository.saveAll(linkedList);
-            sanPham.setSoLuongTon(sanPham.getSoLuongTon() - hoaDon.getSoLuong());
+            sanPham.setSoLuongTon((sanPham.getSoLuongTon() != null ? sanPham.getSoLuongTon() : 0) - hoaDon.getSoLuong());
             sanPhamRepository.save(sanPham);
         }
 

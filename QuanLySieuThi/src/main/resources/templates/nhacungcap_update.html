@@ -12,20 +12,22 @@
 <div class="container">
 
     <h2>Cập nhật thông tin nhà cung cấp</h2>
-    <div th:if="${message}" class="alert alert-danger text-center">
-        [[${message}]]
+    <div th:if="${errorMessage}" class="alert alert-danger text-center">
+        [[${errorMessage}]]
     </div>
 
-    <form action="#" th:action="@{/nhacungcap/update}" th:object="${nhaCungCap}"
-          method="POST">
-        <input type="text" th:field="${nhaCungCap.ma}"  name="ma" readonly
-               placeholder="Mã Nhà cung cấp" class="form-control mb-4 col-4"/>
+    <form action="#" th:action="@{/nhacungcap/update}" th:object="${nhaCungCap}" method="POST">
+        <label for="ma">Mã Nhà cung cấp:</label>
+        <input type="text" th:field="${nhaCungCap.ma}" id="ma" name="ma" readonly
+               placeholder="Mã Nhà cung cấp" class="form-control mb-4 col-4" />
 
-        <input type="text" th:field="${nhaCungCap.ten}" name="ten"
-               placeholder="Tên Nhà cung cấpq" class="form-control mb-4 col-4" required/>
+        <label for="ten">Tên Nhà cung cấp:</label>
+        <input type="text" th:field="${nhaCungCap.ten}" id="ten" name="ten"
+               placeholder="Tên Nhà cung cấp" class="form-control mb-4 col-4" required />
 
-        <button type="submit" class="btn btn-info col-2"> Lưu </button>
+        <button type="submit" class="btn btn-info col-2">Lưu</button>
     </form>
+
 
     <hr>
 

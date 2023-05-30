@@ -2,7 +2,6 @@ package com.example.quanlysieuthi.service.impl;
 
 import com.example.quanlysieuthi.data.entity.HoaDon;
 import com.example.quanlysieuthi.data.entity.KhachHang;
-import com.example.quanlysieuthi.data.entity.NhanVien;
 import com.example.quanlysieuthi.data.repository.HoaDonRepository;
 import com.example.quanlysieuthi.data.repository.KhachHangRepository;
 import com.example.quanlysieuthi.dto.request.KhachHangRequest;
@@ -50,6 +49,14 @@ public class KhachHangServiceImpl implements KhachHangService {
     public void creatKhachHang(KhachHangRequest dto) {
         List<KhachHang> khachHangList = this.khachHangRepository.findAll();
         LinkedList<KhachHang> linkedList = convertToLinkedList(khachHangList);
+        if (dto.getCccd().length() != 9 && dto.getCccd().length() != 12){
+            throw new ResourceNotAcceptException("Số căn cước công dân không hợp lệ!!. CMND/CCCD có 9 hoặc 12 số.");
+        }
+
+        if (dto.getSdt().length() != 10){
+            throw new ResourceNotAcceptException("Số điện thoại không hợp lệ!!. Số điện thoại có 10 số.");
+        }
+
         if (linkedList.isEmpty()){
             KhachHang khachHang = modelMapper.map(dto, KhachHang.class);
             linkedList.addFirst(khachHang);
@@ -70,6 +77,13 @@ public class KhachHangServiceImpl implements KhachHangService {
 
     @Override
     public void updateKhachHang(KhachHangRequest dto) {
+        if (dto.getCccd().length() != 9 && dto.getCccd().length() != 12){
+            throw new ResourceNotAcceptException("Số căn cước công dân không hợp lệ!!. CMND/CCCD có 9 hoặc 12 số.");
+        }
+
+        if (dto.getSdt().length() != 10){
+            throw new ResourceNotAcceptException("Số điện thoại không hợp lệ!!. Số điện thoại có 10 số.");
+        }
         KhachHang khachHang = modelMapper.map(dto, KhachHang.class);
         khachHangRepository.save(khachHang);
 
@@ -85,7 +99,7 @@ public class KhachHangServiceImpl implements KhachHangService {
         List<HoaDon> hoaDonList = this.hoaDonRepository.findAll();
         boolean hasHoaDon = false;
         for (HoaDon hoaDon : hoaDonList) {
-            if (ma.equals(hoaDon.getSanPham().getMa())) {
+            if (ma.equals(hoaDon.getKhachHang().getMa())) {
                 hasHoaDon = true;
                 break;
             }

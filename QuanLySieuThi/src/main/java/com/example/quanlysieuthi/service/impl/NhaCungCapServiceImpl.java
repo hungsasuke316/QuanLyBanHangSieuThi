@@ -99,7 +99,7 @@ public class NhaCungCapServiceImpl implements NhaCungCapService {
         List<PhieuNhap> phieuNhapList = this.phieuNhapRepository.findAll();
         boolean hasPhieuNhap = false;
         for (PhieuNhap phieuNhap : phieuNhapList) {
-            if (ma.equals(phieuNhap.getSanPham().getMa())) {
+            if (ma.equals(phieuNhap.getNhaCungCap().getMa())) {
                 hasPhieuNhap = true;
                 break;
             }

@@ -53,9 +53,14 @@ public class NhanVienServiceImpl implements NhanVienService {
     public void creatNhanVien(NhanVienRequest dto) {
         List<NhanVien> nhanVienList = this.nhanVienRepository.findAll();
         LinkedList<NhanVien> linkedList = convertToLinkedList(nhanVienList);
-        if (dto.getCccd().length() != 9 || dto.getCccd().length() != 13){
-            throw new ResourceNotAcceptException("Số căn cước công dân không hợp lệ!!");
+
+        if (dto.getCccd().length() != 9 && dto.getCccd().length() != 12){
+            throw new ResourceNotAcceptException("Số căn cước công dân không hợp lệ!!. CMND/CCCD có 9 hoặc 12 số.");
         }
+        if (dto.getSdt().length() != 10){
+            throw new ResourceNotAcceptException("Số điện thoại không hợp lệ!!. Số điện thoại có 10 số.");
+        }
+
         if (linkedList.isEmpty()){
             NhanVien nhanVien = modelMapper.map(dto, NhanVien.class);
             linkedList.addFirst(nhanVien);
@@ -76,6 +81,12 @@ public class NhanVienServiceImpl implements NhanVienService {
 
     @Override
     public void updateNhanVien(NhanVienRequest dto) {
+        if (dto.getCccd().length() != 9 && dto.getCccd().length() != 12){
+            throw new ResourceNotAcceptException("Số căn cước công dân không hợp lệ!!. CMND/CCCD có 9 hoặc 12 số.");
+        }
+        if (dto.getSdt().length() != 10){
+            throw new ResourceNotAcceptException("Số điện thoại không hợp lệ!!. Số điện thoại có 10 số.");
+        }
         NhanVien nhanVien = modelMapper.map(dto, NhanVien.class);
         nhanVienRepository.save(nhanVien);
 
@@ -100,7 +111,7 @@ public class NhanVienServiceImpl implements NhanVienService {
         List<HoaDon> hoaDonList = this.hoaDonRepository.findAll();
         boolean hasHoaDon = false;
         for (HoaDon hoaDon : hoaDonList) {
-            if (ma.equals(hoaDon.getSanPham().getMa())) {
+            if (ma.equals(hoaDon.getNhanVien().getMa())) {
                 hasHoaDon = true;
                 break;
             }

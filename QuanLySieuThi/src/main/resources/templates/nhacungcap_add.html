@@ -11,26 +11,35 @@
 <body>
 <div class="container">
     <script>
-        function remove10thCharacter(event) {
-            var input = event.target;
+        function processInput(event, input) {
             var value = input.value;
 
+            // Xóa khoảng trắng trong chuỗi
+            value = value.replace(/\s/g, '');
+
+            // Xóa ký tự thứ 10
             if (value.length >= 11) {
-                input.value = value.slice(0, 10);  // Xóa ký tự thứ 13
+                value = value.slice(0, 10) + value.slice(11);
             }
+
+            // Xóa các ký tự có dấu
+            value = value.replace(/[^\x00-\x7F]/g, '');
+
+            // Gán giá trị đã xử lý vào trường nhập liệu
+            input.value = value;
         }
     </script>
 
     <h2>Thêm mới nhà cung cấp</h2>
-    <div th:if="${message}" class="alert alert-success text-center">
-        [[${message}]]
+    <div th:if="${errorMessage}" class="alert alert-success text-center">
+        [[${errorMessage}]]
     </div>
 
     <form action="#" th:action="@{/nhacungcap}" th:object="${nhaCungCap}"
           method="POST">
         <input type="text" th:field="${nhaCungCap.ma}" name="ma" required
                placeholder="Mã Nhà cung cấp" class="form-control mb-4 col-4"
-               onkeyup="remove10thCharacter(event)"/>
+               onkeyup="processInput(event, this)"/>
 
         <input type="text" th:field="${nhaCungCap.ten}" name="ten" required
                placeholder="Tên Nhà cung cấp" class="form-control mb-4 col-4"/>

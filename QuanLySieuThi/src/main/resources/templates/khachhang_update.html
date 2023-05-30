@@ -22,39 +22,52 @@
     </script>
 
     <script>
-        function remove10thCharacter(event) {
-            var input = event.target;
+        function processInput(event, input) {
             var value = input.value;
 
+            // Xóa khoảng trắng trong chuỗi
+            value = value.replace(/\s/g, '');
+
+            // Xóa ký tự thứ 10
             if (value.length >= 11) {
-                input.value = value.slice(0, 10);
+                value = value.slice(0, 10) + value.slice(11);
             }
+
+            // Xóa các ký tự có dấu
+            value = value.replace(/[^\x00-\x7F]/g, '');
+
+            // Gán giá trị đã xử lý vào trường nhập liệu
+            input.value = value;
         }
     </script>
 
     <h2>Cập nhật thông tin khách hàng</h2>
-    <div th:if="${message}" class="alert alert-danger text-center">
-        [[${message}]]
+    <div th:if="${errorMessage}" class="alert alert-danger text-center">
+        [[${errorMessage}]]
     </div>
 
-    <form action="#" th:action="@{/khachhang/update}" th:object="${khachHang}"
-          method="POST">
-        <input type="text" th:field="${khachHang.ma}"  name="ma" readonly
-               placeholder="Mã Khách hàng" class="form-control mb-4 col-4"/>
+    <form action="#" th:action="@{/khachhang/update}" th:object="${khachHang}" method="POST">
+        <label for="ma">Mã Khách hàng:</label>
+        <input type="text" th:field="${khachHang.ma}" id="ma" name="ma" readonly
+               placeholder="Mã Khách hàng" class="form-control mb-4 col-4" />
 
-        <input type="text" th:field="${khachHang.ten}" name="ten"
-               placeholder="Tên Khách hàng" class="form-control mb-4 col-4" required/>
+        <label for="ten">Tên Khách hàng:</label>
+        <input type="text" th:field="${khachHang.ten}" id="ten" name="ten"
+               placeholder="Tên Khách hàng" class="form-control mb-4 col-4" required />
 
-        <input type="text" th:field="${khachHang.cccd}" name="cccd"
-               placeholder="Căn cước công dân" class="form-control mb-4 col-4" required
-               onkeyup="remove13thCharacter(event)"/>
+        <label for="cccd">Căn cước công dân:</label>
+        <input type="number" th:field="${khachHang.cccd}" id="cccd" name="cccd"
+               placeholder="Căn cước công dân" class="form-control mb-4 col-4" required
+               onkeyup="remove13thCharacter(event)" />
 
-        <input type="text" th:field="${khachHang.sdt}" name="sdt"
-               placeholder="Số điện thoại" class="form-control mb-4 col-4" required
-               onkeyup="remove10thCharacter(event)"/>
+        <label for="sdt">Số điện thoại:</label>
+        <input type="tel" th:field="${khachHang.sdt}" id="sdt" name="sdt"
+               placeholder="Số điện thoại" class="form-control mb-4 col-4" required
+               onkeyup="processInput(event, this)" />
 
-        <button type="submit" class="btn btn-info col-2"> Lưu </button>
+        <button type="submit" class="btn btn-info col-2">Lưu</button>
     </form>
+
 
     <hr>
 

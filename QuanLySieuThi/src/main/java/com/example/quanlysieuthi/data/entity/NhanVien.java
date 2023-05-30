@@ -21,7 +21,7 @@ public class NhanVien {
     private String ma;
     private String ten;
     private String cccd;
-    private Integer sdt;
+    private String sdt;
     private String diaChi;
 
     @JsonIgnore

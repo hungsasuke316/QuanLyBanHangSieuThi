@@ -12,26 +12,30 @@
 <div class="container">
 
     <h2>Cập nhật thông tin sản phẩm</h2>
-    <div th:if="${message}" class="alert alert-danger text-center">
-        [[${message}]]
+    <div th:if="${errorMessage}" class="alert alert-danger text-center">
+        [[${errorMessage}]]
     </div>
 
-    <form action="#" th:action="@{/sanpham/update}" th:object="${sanPham}"
-          method="POST">
-        <input type="text" th:field="${sanPham.ma}" name="ma" readonly
-               placeholder="Mã Sản Phẩm" class="form-control mb-4 col-4"/>
+    <form action="#" th:action="@{/sanpham/update}" th:object="${sanPham}" method="POST">
+        <label for="ma">Mã Sản Phẩm:</label>
+        <input type="text" th:field="${sanPham.ma}" id="ma" name="ma" readonly
+               placeholder="Mã Sản Phẩm" class="form-control mb-4 col-4" />
 
-        <input type="text" th:field="${sanPham.ten}" name="ten"
-               placeholder="Tên Sản Phẩm" class="form-control mb-4 col-4" required/>
+        <label for="ten">Tên Sản Phẩm:</label>
+        <input type="text" th:field="${sanPham.ten}" id="ten" name="ten"
+               placeholder="Tên Sản Phẩm" class="form-control mb-4 col-4" required />
 
-        <input type="text" th:field="${sanPham.donViTinh}" name="donViTinh"
-               placeholder="Đơn vị tính" class="form-control mb-4 col-4" required/>
+        <label for="donViTinh">Đơn vị tính:</label>
+        <input type="text" th:field="${sanPham.donViTinh}" id="donViTinh" name="donViTinh"
+               placeholder="Đơn vị tính" class="form-control mb-4 col-4" required />
 
-        <input type="text" th:field="${sanPham.donGia}" name="donGia"
-               placeholder="Đơn giá" class="form-control mb-4 col-4" required/>
+        <label for="donGia">Đơn giá:</label>
+        <input type="text" th:field="${sanPham.donGia}" id="donGia" name="donGia"
+               placeholder="Đơn giá" class="form-control mb-4 col-4" required />
 
-        <button type="submit" class="btn btn-info col-2"> Lưu </button>
+        <button type="submit" class="btn btn-info col-2">Lưu</button>
     </form>
+
 
     <hr>
 

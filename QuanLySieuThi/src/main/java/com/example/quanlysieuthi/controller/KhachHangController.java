@@ -1,7 +1,6 @@
 package com.example.quanlysieuthi.controller;
 
 import com.example.quanlysieuthi.data.entity.KhachHang;
-import com.example.quanlysieuthi.data.entity.NhanVien;
 import com.example.quanlysieuthi.dto.request.KhachHangRequest;
 import com.example.quanlysieuthi.exceptions.ResourceNotAcceptException;
 import com.example.quanlysieuthi.service.KhachHangService;
@@ -87,7 +86,7 @@ public class KhachHangController {
         model.addAttribute("size", size);
         redirectAttributes.addFlashAttribute("successMessage", "Sửa khách hàng thành công");
 
-        return "redirect:/khachhang";
+        return "redirect:/khachhang/?page=" + page + "&size=" + size;
     }
 
     @GetMapping("/khachhang/delete/{ma}")
@@ -103,7 +102,7 @@ public class KhachHangController {
             model.addAttribute("size", size);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa khách hàng thành công");
 
-            return "redirect:/khachhang";
+            return "redirect:/khachhang/?page=" + page + "&size=" + size;
         }
         catch (ResourceNotAcceptException e){
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

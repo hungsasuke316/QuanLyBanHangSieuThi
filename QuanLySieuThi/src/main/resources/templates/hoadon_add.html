@@ -11,25 +11,34 @@
 <body>
 <div class="container">
     <script>
-        function remove10thCharacter(event) {
-            var input = event.target;
+        function processInput(event, input) {
             var value = input.value;
 
+            // Xóa khoảng trắng trong chuỗi
+            value = value.replace(/\s/g, '');
+
+            // Xóa ký tự thứ 10
             if (value.length >= 11) {
-                input.value = value.slice(0, 10);  // Xóa ký tự thứ 13
+                value = value.slice(0, 10) + value.slice(11);
             }
+
+            // Xóa các ký tự có dấu
+            value = value.replace(/[^\x00-\x7F]/g, '');
+
+            // Gán giá trị đã xử lý vào trường nhập liệu
+            input.value = value;
         }
     </script>
 
     <h2>Tạo hóa đơn mua hàng</h2>
-    <div th:if="${message}" class="alert alert-success text-center">
-        [[${message}]]
+    <div th:if="${errorMessage}" class="alert alert-danger text-center">
+        [[${errorMessage}]]
     </div>
 
     <form method="post" th:action="@{/hoadon}" th:object="${hoaDon}">
         <label for="maHoaDon">Mã hóa đơn:</label>
         <input type="text" id="maHoaDon" name="maHoaDon" class="form-control mb-4 col-4" th:field="*{ma}" required
-               onkeyup="remove10thCharacter(event)"/>
+               onkeyup="processInput(event, this)"/>
 
         <label for="maNhanVien">Mã nhân viên:</label>
         <select id="maNhanVien" name="maNhanVien" class="form-control mb-4 col-4" th:field="*{nhanVien}" required>
@@ -39,7 +48,8 @@
         </select>
 
         <label for="maKhachHang">Mã khách hàng:</label>
-        <select id="maKhachHang" name="maKhachHang" class="form-control mb-4 col-4" th:field="*{khachHang}" required>
+        <select id="maKhachHang" name="maKhachHang" class="form-control mb-4 col-4" th:field="*{khachHang}">
+            <option value="">-- Chọn mã khách hàng --</option> <!-- Tùy chọn mặc định rỗng -->
             <option th:each="khachHang : ${khachHang}"
                     th:value="${khachHang.ma}"
                     th:text="${khachHang.ma + ' - ' + khachHang.ten}"></option>

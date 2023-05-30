@@ -92,7 +92,7 @@ public class NhaCungCapController {
         model.addAttribute("size", size);
         redirectAttributes.addFlashAttribute("successMessage", "Sửa nhà cung cấp thành công!");
 
-        return "redirect:/nhacungcap";
+        return "redirect:/nhacungcap/?page=" + page + "&size=" + size;
     }
 
     @GetMapping("/nhacungcap/delete/{ma}")
@@ -108,7 +108,7 @@ public class NhaCungCapController {
             model.addAttribute("size", size);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa nhà cung cấp thành công!");
 
-            return "redirect:/nhacungcap";
+            return "redirect:/nhacungcap/?page=" + page + "&size=" + size;
         }
         catch (ResourceNotAcceptException e){
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

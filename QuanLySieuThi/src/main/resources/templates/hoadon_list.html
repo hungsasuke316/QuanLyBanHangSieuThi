@@ -35,7 +35,11 @@
                         html += '<p>Ngày lập: ' + ngayLapFormatted + '</p>';
 
                         html += '<p>Nhân viên: ' + chiTietHoaDon.nhanVien.ma + ' - ' + chiTietHoaDon.nhanVien.ten + '</p>';
-                        html += '<p>Khách hàng: ' + chiTietHoaDon.khachHang.ma + ' - ' + chiTietHoaDon.khachHang.ten + '</p>';
+                        if (chiTietHoaDon.khachHang) {
+                            html += '<p>Khách hàng: ' + chiTietHoaDon.khachHang.ma + ' - ' + chiTietHoaDon.khachHang.ten + '</p>';
+                        } else {
+                            html += '<p>Khách hàng: Chưa đăng ký</p>';
+                        }
                         html += '<p>Sản phẩm: ' + chiTietHoaDon.sanPham.ma + ' - ' + chiTietHoaDon.sanPham.ten + '</p>';
                         html += '<p>Số lượng: ' + chiTietHoaDon.soLuong + '</p>';
                         html += '<p>Đơn giá: ' + chiTietHoaDon.sanPham.donGia + '</p>';
@@ -110,7 +114,7 @@
                             <td th:text="${hoaDon.ma}"></td>
                             <td th:text="${dateFormat.format(hoaDon.ngayLapHoaDon)}"></td>
                             <td th:text="${hoaDon.nhanVien.ma}"></td>
-                            <td th:text="${hoaDon.khachHang.ma}"></td>
+                            <td th:text="${(hoaDon.khachHang != null && hoaDon.khachHang.ma != null) ? hoaDon.khachHang.ma : 'Chưa đăng ký'}"></td>
                             <td th:text="${hoaDon.sanPham.ma}"></td>
                             <td th:text="${hoaDon.soLuong}"></td>
                             <td th:text="${hoaDon.tongTien}"></td>
@@ -168,6 +172,7 @@
                 Không tìm thấy kết quả.
             </div>
         </div>
+        <a class="btn btn-outline-primary" th:href = "@{/}"> Quay lại </a>
 
     </div>
 </body>

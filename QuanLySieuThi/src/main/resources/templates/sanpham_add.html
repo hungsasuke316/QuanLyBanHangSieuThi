@@ -11,13 +11,22 @@
 <body>
 <div class="container">
     <script>
-        function remove10thCharacter(event) {
-            var input = event.target;
+        function processInput(event, input) {
             var value = input.value;
 
+            // Xóa khoảng trắng trong chuỗi
+            value = value.replace(/\s/g, '');
+
+            // Xóa ký tự thứ 10
             if (value.length >= 11) {
-                input.value = value.slice(0, 10);
+                value = value.slice(0, 10) + value.slice(11);
             }
+
+            // Xóa các ký tự có dấu
+            value = value.replace(/[^\x00-\x7F]/g, '');
+
+            // Gán giá trị đã xử lý vào trường nhập liệu
+            input.value = value;
         }
     </script>
 
@@ -30,7 +39,7 @@
           method="POST">
         <input type="text" th:field="*{ma}" name="ma"
                placeholder="Mã Sản Phẩm" class="form-control mb-4 col-4" required
-               onkeyup="remove10thCharacter(event)"/>
+               onkeyup="processInput(event, this)"/>
 
         <input type="text" th:field="*{ten}" name="ten"
                placeholder="Tên Sản Phẩm" class="form-control mb-4 col-4" required/>

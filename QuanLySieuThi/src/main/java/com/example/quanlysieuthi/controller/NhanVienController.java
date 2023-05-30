@@ -87,7 +87,7 @@ public class NhanVienController {
         model.addAttribute("size", size);
         redirectAttributes.addFlashAttribute("successMessage", "Sửa nhân viên thành công!");
 
-        return "redirect:/nhanvien";
+        return "redirect:/nhanvien/?page=" + page + "&size=" + size;
     }
 
     @GetMapping("/nhanvien/delete/{ma}")
@@ -103,7 +103,7 @@ public class NhanVienController {
             model.addAttribute("size", size);
             redirectAttributes.addFlashAttribute("successMessage", "Xóa nhân viên thành công!");
 
-            return "redirect:/nhanvien";
+            return "redirect:/nhanvien/?page=" + page + "&size=" + size;
         }
         catch (ResourceNotAcceptException e){
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

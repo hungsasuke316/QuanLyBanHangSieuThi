@@ -13,8 +13,8 @@
 <body>
 <div class="container">
     <div><h1>Báo Cáo Doanh Thu</h1></div>
-    <div th:if="${message}" class="alert alert-success text-center">
-        [[${message}]]
+    <div th:if="${errorMessage}" class="alert alert-danger text-center">
+        [[${errorMessage}]]
     </div>
     <form id="reportForm" method="post">
         <label for="year">Năm:</label>
@@ -33,6 +33,7 @@
     <div>
         <canvas id="myChart"></canvas>
     </div>
+    <a class="btn btn-outline-primary" th:href = "@{/}"> Quay lại </a>
     <script>
         // Lấy dữ liệu từ model và tạo biểu đồ
         var hoaDonTien = [[${report.tongTienHoaDon}]];

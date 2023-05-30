@@ -87,7 +87,7 @@ public class SanPhamController {
         model.addAttribute("size", size);
         redirectAttributes.addFlashAttribute("successMessage", "Sửa sản phẩm thành công");
 
-        return "redirect:/sanpham";
+        return "redirect:/sanpham/?page=" + page + "&size=" + size;
     }
 
     @GetMapping("/sanpham/delete/{ma}")
@@ -104,7 +104,7 @@ public class SanPhamController {
             model.addAttribute("size", size);
 
 
-            return "redirect:/sanpham";
+            return "redirect:/sanpham/?page=" + page + "&size=" + size;
         }
         catch (ResourceNotAcceptException e){
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
