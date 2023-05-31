@@ -99,7 +99,7 @@ public class KhachHangServiceImpl implements KhachHangService {
         List<HoaDon> hoaDonList = this.hoaDonRepository.findAll();
         boolean hasHoaDon = false;
         for (HoaDon hoaDon : hoaDonList) {
-            if (ma.equals(hoaDon.getKhachHang().getMa())) {
+            if (hoaDon.getKhachHang() != null && ma.equals(hoaDon.getKhachHang().getMa())) {
                 hasHoaDon = true;
                 break;
             }
